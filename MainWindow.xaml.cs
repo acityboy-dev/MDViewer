@@ -4,7 +4,8 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Input;
-using System.Windows.Threading;
+using System.Diagnostics;
+using System.IO;
 using MDViewer.Models;
 using MDViewer.Services;
 using MDViewer.ViewModels;
@@ -13,22 +14,9 @@ namespace MDViewer;
 
 public partial class MainWindow : Window
 {
-    private const double DocumentWheelScale = 1.85;
-    private const double EditorWheelScale = 1.65;
-    private static readonly TimeSpan DocumentWheelDuration = TimeSpan.FromMilliseconds(190);
-    private static readonly TimeSpan EditorWheelDuration = TimeSpan.FromMilliseconds(170);
-
     private readonly MainViewModel _viewModel;
     private readonly DwmBackdropService _dwmBackdropService;
-    private readonly DispatcherTimer _documentScrollTimer = new() { Interval = TimeSpan.FromMilliseconds(16) };
-    private readonly DispatcherTimer _editorScrollTimer = new() { Interval = TimeSpan.FromMilliseconds(16) };
     private ScrollViewer? _documentScrollViewer;
-    private double _documentScrollStart;
-    private double _documentScrollTarget;
-    private DateTime _documentScrollStarted;
-    private double _editorScrollStart;
-    private double _editorScrollTarget;
-    private DateTime _editorScrollStarted;
 
     public MainWindow()
     {
@@ -59,8 +47,6 @@ public partial class MainWindow : Window
         AddHandler(DragDrop.PreviewDragOverEvent, new DragEventHandler(Root_DragOver), true);
         AddHandler(DragDrop.PreviewDragLeaveEvent, new DragEventHandler(Root_DragLeave), true);
         AddHandler(DragDrop.PreviewDropEvent, new DragEventHandler(Root_Drop), true);
-        _documentScrollTimer.Tick += (_, _) => TickDocumentScroll();
-        _editorScrollTimer.Tick += (_, _) => TickEditorScroll();
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
@@ -106,31 +92,35 @@ public partial class MainWindow : Window
         e.Handled = true;
     }
 
-    private void DocumentViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-    {
-        if (GetDocumentScrollViewer() is not { } scrollViewer)
-        {
-            return;
-        }
-
-        var currentBase = _documentScrollTimer.IsEnabled ? _documentScrollTarget : scrollViewer.VerticalOffset;
-        SmoothScrollDocumentTo(currentBase - e.Delta * DocumentWheelScale, DocumentWheelDuration);
-        e.Handled = true;
-    }
-
-    private void EditorTextBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-    {
-        var currentBase = _editorScrollTimer.IsEnabled ? _editorScrollTarget : EditorTextBox.VerticalOffset;
-        SmoothScrollEditorTo(currentBase - e.Delta * EditorWheelScale, EditorWheelDuration);
-        e.Handled = true;
-    }
-
     private void OutlineListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (OutlineListBox.SelectedItem is TableOfContentsItem item)
         {
             ScrollToTableOfContentsItem(item);
         }
+    }
+
+    private void Settings_Click(object sender, RoutedEventArgs e)
+    {
+        var settingsWindow = new SettingsWindow
+        {
+            Owner = this,
+            DataContext = _viewModel
+        };
+        settingsWindow.ShowDialog();
+    }
+
+    private void CurrentFilePath_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (!File.Exists(_viewModel.CurrentFilePath))
+        {
+            return;
+        }
+
+        Process.Start(new ProcessStartInfo("explorer.exe", $"/select,\"{_viewModel.CurrentFilePath}\"")
+        {
+            UseShellExecute = true
+        });
     }
 
     private void InsertMarkdown_Click(object sender, RoutedEventArgs e)
@@ -193,63 +183,6 @@ public partial class MainWindow : Window
         return _documentScrollViewer;
     }
 
-    private void SmoothScrollDocumentTo(double offset, TimeSpan duration)
-    {
-        var scrollViewer = GetDocumentScrollViewer();
-        if (scrollViewer is null)
-        {
-            return;
-        }
-
-        _documentScrollStart = scrollViewer.VerticalOffset;
-        _documentScrollTarget = Math.Clamp(offset, 0, scrollViewer.ScrollableHeight);
-        _documentScrollStarted = DateTime.UtcNow;
-        _documentScrollTimer.Tag = duration;
-        _documentScrollTimer.Start();
-    }
-
-    private void SmoothScrollEditorTo(double offset, TimeSpan duration)
-    {
-        _editorScrollStart = EditorTextBox.VerticalOffset;
-        _editorScrollTarget = Math.Clamp(offset, 0, EditorTextBox.ExtentHeight);
-        _editorScrollStarted = DateTime.UtcNow;
-        _editorScrollTimer.Tag = duration;
-        _editorScrollTimer.Start();
-    }
-
-    private void TickDocumentScroll()
-    {
-        var scrollViewer = GetDocumentScrollViewer();
-        if (scrollViewer is null)
-        {
-            _documentScrollTimer.Stop();
-            return;
-        }
-
-        var duration = (TimeSpan)(_documentScrollTimer.Tag ?? TimeSpan.FromMilliseconds(260));
-        var progress = Math.Clamp((DateTime.UtcNow - _documentScrollStarted).TotalMilliseconds / duration.TotalMilliseconds, 0, 1);
-        var eased = 1 - Math.Pow(1 - progress, 3);
-        scrollViewer.ScrollToVerticalOffset(_documentScrollStart + ((_documentScrollTarget - _documentScrollStart) * eased));
-
-        if (progress >= 1)
-        {
-            _documentScrollTimer.Stop();
-        }
-    }
-
-    private void TickEditorScroll()
-    {
-        var duration = (TimeSpan)(_editorScrollTimer.Tag ?? TimeSpan.FromMilliseconds(220));
-        var progress = Math.Clamp((DateTime.UtcNow - _editorScrollStarted).TotalMilliseconds / duration.TotalMilliseconds, 0, 1);
-        var eased = 1 - Math.Pow(1 - progress, 3);
-        EditorTextBox.ScrollToVerticalOffset(_editorScrollStart + ((_editorScrollTarget - _editorScrollStart) * eased));
-
-        if (progress >= 1)
-        {
-            _editorScrollTimer.Stop();
-        }
-    }
-
     private void ScrollToTableOfContentsItem(TableOfContentsItem item)
     {
         if (item.TargetBlock is null || GetDocumentScrollViewer() is not { } scrollViewer)
@@ -260,7 +193,7 @@ public partial class MainWindow : Window
         DocumentViewer.UpdateLayout();
         var rect = item.TargetBlock.ContentStart.GetCharacterRect(LogicalDirection.Forward);
         var target = scrollViewer.VerticalOffset + rect.Top - 26;
-        SmoothScrollDocumentTo(target, TimeSpan.FromMilliseconds(420));
+        scrollViewer.ScrollToVerticalOffset(Math.Clamp(target, 0, scrollViewer.ScrollableHeight));
     }
 
     private void InsertMarkdownToken(string token)
@@ -351,6 +284,12 @@ public partial class MainWindow : Window
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
         base.OnMouseLeftButtonDown(e);
+        if (e.ClickCount == 2 && e.GetPosition(this).Y <= 44)
+        {
+            Maximize_Click(this, new RoutedEventArgs());
+            return;
+        }
+
         if (e.ButtonState == MouseButtonState.Pressed && e.GetPosition(this).Y <= 44)
         {
             DragMove();

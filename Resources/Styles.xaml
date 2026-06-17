@@ -134,6 +134,18 @@
         </Setter>
     </Style>
 
+    <Style x:Key="CaptionPathStyle" TargetType="Path">
+        <Setter Property="Width" Value="14" />
+        <Setter Property="Height" Value="14" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="Stroke" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+        <Setter Property="StrokeThickness" Value="1.7" />
+        <Setter Property="StrokeStartLineCap" Value="Round" />
+        <Setter Property="StrokeEndLineCap" Value="Round" />
+        <Setter Property="StrokeLineJoin" Value="Round" />
+        <Setter Property="Fill" Value="Transparent" />
+    </Style>
+
     <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
         <Setter Property="Foreground" Value="#D92D20" />
         <Setter Property="Template">
@@ -258,9 +270,12 @@
                                             BorderThickness="{TemplateBinding BorderThickness}"
                                             CornerRadius="10">
                                         <Grid>
-                                            <ContentPresenter Margin="10,0,34,0"
-                                                              VerticalAlignment="Center"
-                                                              HorizontalAlignment="Left" />
+                                            <TextBlock Text="{Binding SelectionBoxItem, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                       Margin="10,0,34,0"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}"
+                                                       TextTrimming="CharacterEllipsis" />
                                             <TextBlock Text="⌄"
                                                        HorizontalAlignment="Right"
                                                        VerticalAlignment="Center"
@@ -276,14 +291,13 @@
                                 </ControlTemplate>
                             </ToggleButton.Template>
                         </ToggleButton>
-                        <ContentPresenter x:Name="ContentSite"
-                                          IsHitTestVisible="False"
-                                          Content="{TemplateBinding SelectionBoxItem}"
-                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                          ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
-                                          Margin="10,0,34,0"
-                                          VerticalAlignment="Center"
-                                          HorizontalAlignment="Left" />
+                        <TextBlock IsHitTestVisible="False"
+                                   Text="{TemplateBinding SelectionBoxItem}"
+                                   Margin="10,0,34,0"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                   TextTrimming="CharacterEllipsis" />
                         <Popup x:Name="Popup"
                                Placement="Bottom"
                                IsOpen="{TemplateBinding IsDropDownOpen}"

@@ -7,10 +7,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\MarkFlow.ico</ApplicationIcon>
+    <AssemblyName>MarkFlow</AssemblyName>
+    <Product>MarkFlow</Product>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.38.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\MarkFlow.ico" />
+    <Resource Include="Assets\MarkFlow.png" />
+    <Resource Include="Assets\MarkFlow-64.png" />
+    <Resource Include="Assets\MarkFlow-32.png" />
   </ItemGroup>
 
 </Project>

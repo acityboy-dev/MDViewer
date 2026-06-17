@@ -1,6 +1,7 @@
 using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Globalization;
 using System.Windows.Media;
 using MDViewer.Models;
 
@@ -38,8 +39,9 @@ public sealed class FontCacheService
         }
 
         TryLoadPrivateFont(fontPath);
+        var familyName = ResolveFamilyName(fontPath, option.FamilyName);
         var baseUri = new Uri(Path.GetDirectoryName(fontPath) + Path.DirectorySeparatorChar, UriKind.Absolute);
-        return new FontFamily(baseUri, $"./#{option.FamilyName}");
+        return new FontFamily(baseUri, $"./#{familyName}");
     }
 
     private async Task DownloadFirstAvailableAsync(DocumentFontOption option, string fontPath)
@@ -88,6 +90,34 @@ public sealed class FontCacheService
         catch
         {
         }
+    }
+
+    private static string ResolveFamilyName(string path, string fallbackName)
+    {
+        try
+        {
+            var glyphTypeface = new GlyphTypeface(new Uri(path, UriKind.Absolute));
+            if (glyphTypeface.FamilyNames.TryGetValue(CultureInfo.GetCultureInfo("ko-KR"), out var koreanName))
+            {
+                return koreanName;
+            }
+
+            if (glyphTypeface.FamilyNames.TryGetValue(CultureInfo.GetCultureInfo("en-US"), out var englishName))
+            {
+                return englishName;
+            }
+
+            var firstName = glyphTypeface.FamilyNames.Values.FirstOrDefault();
+            if (!string.IsNullOrWhiteSpace(firstName))
+            {
+                return firstName;
+            }
+        }
+        catch
+        {
+        }
+
+        return fallbackName;
     }
 
     [DllImport("gdi32.dll", CharSet = CharSet.Unicode)]

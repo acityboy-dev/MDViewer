@@ -7,6 +7,7 @@
         xmlns:vm="clr-namespace:MDViewer.ViewModels"
         mc:Ignorable="d"
         Title="{Binding Title}"
+        Icon="pack://application:,,,/Assets/MarkFlow-64.png"
         Width="1360"
         Height="860"
         MinWidth="980"
@@ -59,17 +60,10 @@
                             Orientation="Horizontal"
                             VerticalAlignment="Center"
                             Margin="14,0,10,0">
-                    <Border Width="24"
-                            Height="24"
-                            CornerRadius="6"
-                            Background="{DynamicResource AccentBrush}">
-                        <TextBlock Text="M"
-                                   Foreground="White"
-                                   FontWeight="SemiBold"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" />
-                    </Border>
-                    <TextBlock Text="MDViewer"
+                    <Image Source="pack://application:,,,/Assets/MarkFlow-64.png"
+                           Width="26"
+                           Height="26" />
+                    <TextBlock Text="MarkFlow"
                                Margin="10,0,0,0"
                                VerticalAlignment="Center"
                                FontSize="13"
@@ -101,7 +95,9 @@
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource TextMutedBrush}"
                                FontSize="12"
-                               TextTrimming="CharacterEllipsis" />
+                               TextTrimming="CharacterEllipsis"
+                               Cursor="Hand"
+                               MouseLeftButtonUp="CurrentFilePath_MouseLeftButtonUp" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="2"
@@ -113,23 +109,34 @@
                             ToolTip="테마 전환"
                             Command="{Binding ToggleThemeCommand}" />
                     <Button Style="{StaticResource ToolbarIconButtonStyle}"
-                            Content="⚙"
-                            ToolTip="Inspector 접기/펼치기"
-                            Command="{Binding ToggleInspectorCommand}" />
+                            ToolTip="설정"
+                            Click="Settings_Click">
+                        <Path Width="14"
+                              Height="14"
+                              Stretch="Uniform"
+                              Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                              Data="M9.6,1.2 L10.1,3.1 C10.5,3.3 10.8,3.5 11.1,3.8 L13,3.3 L14.2,5.4 L12.8,6.8 C12.9,7.2 12.9,7.6 12.8,8 L14.2,9.6 L13,11.7 L11.1,11.2 C10.8,11.5 10.5,11.7 10.1,11.9 L9.6,13.8 L7.2,13.8 L6.7,11.9 C6.3,11.7 6,11.5 5.7,11.2 L3.8,11.7 L2.6,9.6 L4,8 C3.9,7.6 3.9,7.2 4,6.8 L2.6,5.4 L3.8,3.3 L5.7,3.8 C6,3.5 6.3,3.3 6.7,3.1 L7.2,1.2 Z M8.4,5.3 A2.1,2.1 0 1 0 8.4,9.5 A2.1,2.1 0 0 0 8.4,5.3 Z" />
+                    </Button>
                 </StackPanel>
 
                 <StackPanel Grid.Column="3"
                             Orientation="Horizontal"
                             shell:WindowChrome.IsHitTestVisibleInChrome="True">
                     <Button Style="{StaticResource CaptionButtonStyle}"
-                            Content="−"
-                            Click="Minimize_Click" />
+                            Click="Minimize_Click">
+                        <Path Style="{StaticResource CaptionPathStyle}"
+                              Data="M3,8 L13,8" />
+                    </Button>
                     <Button Style="{StaticResource CaptionButtonStyle}"
-                            Content="▢"
-                            Click="Maximize_Click" />
+                            Click="Maximize_Click">
+                        <Path Style="{StaticResource CaptionPathStyle}"
+                              Data="M4,4 L12,4 L12,12 L4,12 Z" />
+                    </Button>
                     <Button Style="{StaticResource CloseButtonStyle}"
-                            Content="×"
-                            Click="Close_Click" />
+                            Click="Close_Click">
+                        <Path Style="{StaticResource CaptionPathStyle}"
+                              Data="M4.5,4.5 L11.5,11.5 M11.5,4.5 L4.5,11.5" />
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>
@@ -141,8 +148,6 @@
                 <ColumnDefinition Width="{Binding SidebarWidth}" />
                 <ColumnDefinition Width="14" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="14" />
-                <ColumnDefinition Width="{Binding InspectorWidth}" />
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0"
@@ -261,22 +266,31 @@
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
-                        <WrapPanel>
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="H1" Tag="h1" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="H2" Tag="h2" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="B" Tag="bold" FontWeight="Bold" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="I" Tag="italic" FontStyle="Italic" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="`" Tag="code" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="{}{ }" Tag="codeblock" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="❝" Tag="quote" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="•" Tag="ul" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="1." Tag="ol" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="☐" Tag="task" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="🔗" Tag="link" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="▧" Tag="image" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="표" Tag="table" Click="InsertMarkdown_Click" />
-                            <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="—" Tag="hr" Click="InsertMarkdown_Click" />
-                        </WrapPanel>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock Text="작성 도구"
+                                       DockPanel.Dock="Left"
+                                       Margin="0,0,12,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMutedBrush}" />
+                            <WrapPanel>
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="H1" Tag="h1" ToolTip="제목 1" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="H2" Tag="h2" ToolTip="제목 2" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="B" Tag="bold" FontWeight="Bold" ToolTip="굵게" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="I" Tag="italic" FontStyle="Italic" ToolTip="기울임" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="`" Tag="code" ToolTip="인라인 코드" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="{}{ }" Tag="codeblock" ToolTip="코드 블록" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="❝" Tag="quote" ToolTip="인용문" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="•" Tag="ul" ToolTip="글머리 목록" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="1." Tag="ol" ToolTip="번호 목록" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="☐" Tag="task" ToolTip="체크박스" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="Link" Tag="link" ToolTip="링크" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="Img" Tag="image" ToolTip="이미지" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="표" Tag="table" ToolTip="표" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="—" Tag="hr" ToolTip="구분선" Click="InsertMarkdown_Click" />
+                            </WrapPanel>
+                        </DockPanel>
                     </Border>
 
                     <Grid Grid.Row="2">
@@ -286,8 +300,7 @@
                                                   VerticalScrollBarVisibility="Auto"
                                                   HorizontalScrollBarVisibility="Disabled"
                                                   Background="Transparent"
-                                                  IsToolBarVisible="False"
-                                                  PreviewMouseWheel="DocumentViewer_PreviewMouseWheel">
+                                                  IsToolBarVisible="False">
                             <FlowDocumentScrollViewer.Style>
                                 <Style TargetType="FlowDocumentScrollViewer">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -300,8 +313,7 @@
                             </FlowDocumentScrollViewer.Style>
                         </FlowDocumentScrollViewer>
                         <TextBox x:Name="EditorTextBox"
-                                 Text="{Binding MarkdownText, UpdateSourceTrigger=PropertyChanged}"
-                                 PreviewMouseWheel="EditorTextBox_PreviewMouseWheel">
+                                 Text="{Binding MarkdownText, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource MarkdownEditorTextBoxStyle}">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -350,67 +362,6 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="4"
-                    Style="{StaticResource SurfacePanelStyle}"
-                    Opacity="{Binding InspectorOpacity}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel Margin="16">
-                        <Grid>
-                            <StackPanel>
-                                <TextBlock Text="Inspector"
-                                           Style="{StaticResource PanelTitleStyle}" />
-                                <TextBlock Text="문서 및 스타일"
-                                           Style="{StaticResource PanelSubtitleStyle}" />
-                            </StackPanel>
-                            <Button HorizontalAlignment="Right"
-                                    VerticalAlignment="Top"
-                                    Style="{StaticResource ToolbarIconButtonStyle}"
-                                    Content="›"
-                                    ToolTip="Inspector 접기"
-                                    Command="{Binding ToggleInspectorCommand}" />
-                        </Grid>
-
-                        <TextBlock Text="테마"
-                                   Style="{StaticResource FieldLabelStyle}" />
-                        <ComboBox ItemsSource="{Binding ThemeModeOptions}"
-                                  DisplayMemberPath="Label"
-                                  SelectedValuePath="Value"
-                                  SelectedValue="{Binding SelectedThemeMode}"
-                                  Style="{StaticResource SoftComboBoxStyle}" />
-
-                        <TextBlock Text="타이포그래피"
-                                   Style="{StaticResource FieldLabelStyle}" />
-                        <ComboBox ItemsSource="{Binding TypographyPresetOptions}"
-                                  DisplayMemberPath="Label"
-                                  SelectedValuePath="Value"
-                                  SelectedValue="{Binding SelectedTypographyPreset}"
-                                  Style="{StaticResource SoftComboBoxStyle}" />
-
-                        <TextBlock Text="한글 본문 폰트"
-                                   Style="{StaticResource FieldLabelStyle}" />
-                        <ComboBox ItemsSource="{Binding DocumentFontOptions}"
-                                  DisplayMemberPath="Label"
-                                  SelectedItem="{Binding SelectedDocumentFontOption}"
-                                  Style="{StaticResource SoftComboBoxStyle}" />
-
-                        <Separator Margin="0,18" />
-
-                        <TextBlock Text="문서"
-                                   Style="{StaticResource SectionLabelStyle}" />
-                        <TextBlock Text="{Binding DocumentInfo}"
-                                   Margin="0,8,0,0"
-                                   TextWrapping="Wrap"
-                                   Foreground="{DynamicResource TextMutedBrush}"
-                                   FontSize="12" />
-
-                        <Separator Margin="0,18" />
-
-                        <CheckBox Content="파일 변경 감지"
-                                  IsChecked="{Binding IsFileWatchingEnabled}"
-                                  Style="{StaticResource SoftCheckBoxStyle}" />
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
         </Grid>
 
         <Border x:Name="DropOverlay"

@@ -9,6 +9,8 @@ public sealed class DwmBackdropService
 {
     private const int DwmwaUseImmersiveDarkMode = 20;
     private const int DwmwaWindowCornerPreference = 33;
+    private const int DwmwaSystemBackdropType = 38;
+    private const int DwmwaMicaEffect = 1029;
     private const int AccentEnableAcrylicblurbehind = 4;
     private const int WcaAccentPolicy = 19;
 
@@ -74,7 +76,7 @@ public sealed class DwmBackdropService
         {
             AccentState = AccentEnableAcrylicblurbehind,
             AccentFlags = 2,
-            GradientColor = unchecked((int)0x55101520)
+            GradientColor = ToAbgr(0x58, 0x10, 0x15, 0x20)
         };
 
         var accentSize = Marshal.SizeOf<AccentPolicy>();
@@ -89,11 +91,37 @@ public sealed class DwmBackdropService
                 Data = accentPtr
             };
             SetWindowCompositionAttribute(hwnd, ref data);
+            DisableModernBackdrop(hwnd);
         }
         finally
         {
             Marshal.FreeHGlobal(accentPtr);
         }
+    }
+
+    private static void DisableModernBackdrop(IntPtr hwnd)
+    {
+        if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000))
+        {
+            return;
+        }
+
+        try
+        {
+            var none = 1;
+            DwmSetWindowAttribute(hwnd, DwmwaSystemBackdropType, ref none, sizeof(int));
+
+            var disabled = 0;
+            DwmSetWindowAttribute(hwnd, DwmwaMicaEffect, ref disabled, sizeof(int));
+        }
+        catch
+        {
+        }
+    }
+
+    private static int ToAbgr(byte alpha, byte red, byte green, byte blue)
+    {
+        return unchecked((int)((uint)(alpha << 24) | (uint)(blue << 16) | (uint)(green << 8) | red));
     }
 
     [DllImport("dwmapi.dll")]

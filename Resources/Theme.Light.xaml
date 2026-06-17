@@ -3,8 +3,8 @@
     <Color x:Key="AccentColor">#2563EB</Color>
     <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
     <SolidColorBrush x:Key="AccentSoftBrush" Color="#EAF1FF" />
-    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#88F6F7FB" />
-    <SolidColorBrush x:Key="TitleBarBrush" Color="#DDF9FAFC" />
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#66F6F7FB" />
+    <SolidColorBrush x:Key="TitleBarBrush" Color="#B8F9FAFC" />
     <SolidColorBrush x:Key="PanelBrush" Color="#CCFFFFFF" />
     <SolidColorBrush x:Key="DocumentBrush" Color="#F8FFFFFF" />
     <SolidColorBrush x:Key="EmptyStateBrush" Color="#EFFFFFFF" />

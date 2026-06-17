@@ -28,11 +28,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private string _markdownText = string.Empty;
     private FlowDocument? _document;
     private GridLength _sidebarWidth = new(286);
-    private GridLength _inspectorWidth = new(276);
     private double _sidebarOpacity = 1;
-    private double _inspectorOpacity = 1;
     private bool _isSidebarOpen = true;
-    private bool _isInspectorOpen = true;
     private bool _isEditing;
     private bool _isDirty;
     private bool _isFileWatchingEnabled = true;
@@ -64,7 +61,6 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         SaveCommand = new AsyncRelayCommand(SaveAsync, () => HasDocument && IsDirty);
         ToggleEditCommand = new RelayCommand(ToggleEdit, () => HasDocument);
         ToggleSidebarCommand = new RelayCommand(ToggleSidebar);
-        ToggleInspectorCommand = new RelayCommand(ToggleInspector);
         ToggleThemeCommand = new RelayCommand(ToggleTheme);
 
         foreach (var item in _recentFileService.Load())
@@ -81,7 +77,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         };
     }
 
-    public string Title => HasDocument ? $"{DocumentTitle} - MDViewer" : "MDViewer";
+    public string Title => HasDocument ? $"{DocumentTitle} - MarkFlow" : "MarkFlow";
     public ObservableCollection<RecentFileEntry> RecentFiles { get; } = [];
     public ObservableCollection<TableOfContentsItem> TableOfContents { get; } = [];
     public IReadOnlyList<SelectionOption<ThemeMode>> ThemeModeOptions { get; } =
@@ -143,7 +139,6 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public AsyncRelayCommand SaveCommand { get; }
     public RelayCommand ToggleEditCommand { get; }
     public RelayCommand ToggleSidebarCommand { get; }
-    public RelayCommand ToggleInspectorCommand { get; }
     public RelayCommand ToggleThemeCommand { get; }
 
     public string CurrentFilePath
@@ -247,22 +242,10 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         private set => SetProperty(ref _sidebarWidth, value);
     }
 
-    public GridLength InspectorWidth
-    {
-        get => _inspectorWidth;
-        private set => SetProperty(ref _inspectorWidth, value);
-    }
-
     public double SidebarOpacity
     {
         get => _sidebarOpacity;
         private set => SetProperty(ref _sidebarOpacity, value);
-    }
-
-    public double InspectorOpacity
-    {
-        get => _inspectorOpacity;
-        private set => SetProperty(ref _inspectorOpacity, value);
     }
 
     public bool IsFileWatchingEnabled
@@ -485,18 +468,6 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         {
             SidebarWidth = new GridLength(value);
             SidebarOpacity = target == 0 ? Math.Max(0, value / 286) : Math.Min(1, value / 286);
-        });
-    }
-
-    private void ToggleInspector()
-    {
-        _isInspectorOpen = !_isInspectorOpen;
-        var target = _isInspectorOpen ? 276 : 0;
-        var start = InspectorWidth.Value;
-        _tweenService.Animate(start, target, TimeSpan.FromMilliseconds(220), value =>
-        {
-            InspectorWidth = new GridLength(value);
-            InspectorOpacity = target == 0 ? Math.Max(0, value / 276) : Math.Min(1, value / 276);
         });
     }
 

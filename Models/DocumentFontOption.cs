@@ -16,4 +16,6 @@ public sealed class DocumentFontOption
     public string FamilyName { get; }
     public string FallbackFamily { get; }
     public IReadOnlyList<string> DownloadUrls { get; }
+
+    public override string ToString() => Label;
 }
