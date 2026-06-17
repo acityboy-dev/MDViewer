@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="AccentColor">#60A5FA</Color>
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#203B62" />
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#99101216" />
+    <SolidColorBrush x:Key="TitleBarBrush" Color="#DD151922" />
+    <SolidColorBrush x:Key="PanelBrush" Color="#CC1B202A" />
+    <SolidColorBrush x:Key="DocumentBrush" Color="#F01A1E27" />
+    <SolidColorBrush x:Key="EmptyStateBrush" Color="#E5202530" />
+    <SolidColorBrush x:Key="HoverBrush" Color="#263447" />
+    <SolidColorBrush x:Key="PressedBrush" Color="#30415A" />
+    <SolidColorBrush x:Key="HairlineBrush" Color="#26FFFFFF" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F5F7FA" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#D0D5DD" />
+    <SolidColorBrush x:Key="TextMutedBrush" Color="#98A2B3" />
+    <SolidColorBrush x:Key="CodeBackgroundBrush" Color="#111827" />
+    <SolidColorBrush x:Key="QuoteStripeBrush" Color="#60A5FA" />
+    <SolidColorBrush x:Key="ShadowBrush" Color="#66000000" />
+</ResourceDictionary>

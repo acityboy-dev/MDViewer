@@ -1,0 +1,20 @@
+namespace MDViewer.Models;
+
+public sealed class SelectionOption<T>
+{
+    public SelectionOption(T value, string label)
+        : this(value, label, null)
+    {
+    }
+
+    public SelectionOption(T value, string label, string? description)
+    {
+        Value = value;
+        Label = label;
+        Description = description;
+    }
+
+    public T Value { get; }
+    public string Label { get; }
+    public string? Description { get; }
+}

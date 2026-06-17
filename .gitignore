@@ -1,0 +1,9 @@
+bin/
+obj/
+.vs/
+.tmp-build/
+.tmp-run/
+*.user
+*.suo
+*.rsuser
+*.DotSettings.user
