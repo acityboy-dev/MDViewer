@@ -149,7 +149,7 @@
               Margin="18">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="{Binding SidebarWidth}" />
-                <ColumnDefinition Width="14" />
+                <ColumnDefinition Width="{Binding SidebarGapWidth}" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -270,13 +270,22 @@
                             </Style>
                         </Border.Style>
                         <DockPanel LastChildFill="True">
-                            <TextBlock Text="작성 도구"
-                                       DockPanel.Dock="Left"
-                                       Margin="0,0,12,0"
-                                       VerticalAlignment="Center"
-                                       FontSize="12"
-                                       FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextMutedBrush}" />
+                            <StackPanel DockPanel.Dock="Left"
+                                        Orientation="Horizontal"
+                                        Margin="0,0,14,0">
+                                <TextBlock Text="작성 도구"
+                                           Margin="0,0,10,0"
+                                           VerticalAlignment="Center"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextMutedBrush}" />
+                                <ComboBox Width="144"
+                                          Style="{StaticResource SoftComboBoxStyle}"
+                                          ItemsSource="{Binding EditorModeOptions}"
+                                          DisplayMemberPath="Label"
+                                          SelectedValuePath="Value"
+                                          SelectedValue="{Binding SelectedEditorMode}" />
+                            </StackPanel>
                             <WrapPanel>
                                 <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="H1" Tag="h1" ToolTip="제목 1" Click="InsertMarkdown_Click" />
                                 <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="H2" Tag="h2" ToolTip="제목 2" Click="InsertMarkdown_Click" />
@@ -299,7 +308,7 @@
                     <Grid Grid.Row="2">
                         <FlowDocumentScrollViewer x:Name="DocumentViewer"
                                                   Document="{Binding Document}"
-                                                  Padding="28,18,28,24"
+                                                  Padding="30,20,30,24"
                                                   VerticalScrollBarVisibility="Auto"
                                                   HorizontalScrollBarVisibility="Disabled"
                                                   Background="Transparent"
@@ -316,11 +325,9 @@
                                 </Style>
                             </FlowDocumentScrollViewer.Style>
                         </FlowDocumentScrollViewer>
-                        <TextBox x:Name="EditorTextBox"
-                                 Text="{Binding MarkdownText, UpdateSourceTrigger=PropertyChanged}"
-                                 PreviewMouseWheel="EditorTextBox_PreviewMouseWheel">
-                            <TextBox.Style>
-                                <Style TargetType="TextBox" BasedOn="{StaticResource MarkdownEditorTextBoxStyle}">
+                        <Grid Margin="20">
+                            <Grid.Style>
+                                <Style TargetType="Grid">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsEditing}" Value="True">
@@ -328,8 +335,58 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                            </Grid.Style>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="{Binding EditorPreviewGapWidth}" />
+                                <ColumnDefinition Width="{Binding EditorPreviewWidth}" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="EditorTextBox"
+                                     Grid.Column="0"
+                                     Text="{Binding MarkdownText, UpdateSourceTrigger=PropertyChanged}"
+                                     PreviewMouseWheel="EditorTextBox_PreviewMouseWheel"
+                                     Style="{StaticResource MarkdownEditorTextBoxStyle}" />
+                            <Border Grid.Column="2"
+                                    Background="{DynamicResource SurfaceBrush}"
+                                    CornerRadius="14"
+                                    ClipToBounds="True">
+                                <FlowDocumentScrollViewer Document="{Binding EditorPreviewDocument}"
+                                                          Padding="24,18,24,22"
+                                                          VerticalScrollBarVisibility="Auto"
+                                                          HorizontalScrollBarVisibility="Disabled"
+                                                          Background="Transparent"
+                                                          IsToolBarVisible="False" />
+                            </Border>
+                        </Grid>
+                        <Border HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Margin="0,18,28,0"
+                                Padding="14,8"
+                                CornerRadius="18"
+                                Background="{DynamicResource AccentSoftBrush}"
+                                Panel.ZIndex="5">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsDirty}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="7"
+                                         Height="7"
+                                         Margin="0,0,8,0"
+                                         VerticalAlignment="Center"
+                                         Fill="{DynamicResource AccentBrush}" />
+                                <TextBlock Text="저장되지 않은 변경사항"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                            </StackPanel>
+                        </Border>
                         <Border Background="{DynamicResource EmptyStateBrush}"
                                 CornerRadius="18"
                                 Padding="34"

@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Threading;
 using Microsoft.Win32;
 using MDViewer.Models;
 using MDViewer.Services;
@@ -19,6 +20,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private readonly FileWatcherService _fileWatcherService;
     private readonly TweenService _tweenService;
     private readonly DwmBackdropService _dwmBackdropService;
+    private readonly DispatcherTimer _editorPreviewTimer;
     private Window? _window;
     private string _currentFilePath = string.Empty;
     private string _documentTitle = "제목 없음";
@@ -27,14 +29,20 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private string _renderStatus = string.Empty;
     private string _markdownText = string.Empty;
     private FlowDocument? _document;
+    private FlowDocument? _editorPreviewDocument;
     private GridLength _sidebarWidth = new(286);
+    private GridLength _sidebarGapWidth = new(14);
+    private GridLength _editorPreviewWidth = new(0);
+    private GridLength _editorPreviewGapWidth = new(0);
     private double _sidebarOpacity = 1;
     private bool _isSidebarOpen = true;
     private bool _isEditing;
     private bool _isDirty;
+    private bool _isLoadingDocument;
     private bool _isFileWatchingEnabled = true;
     private ThemeMode _selectedThemeMode = ThemeMode.Light;
     private TypographyPreset _selectedTypographyPreset = TypographyPreset.Comfortable;
+    private EditorMode _selectedEditorMode = EditorMode.Markdown;
     private DocumentFontOption? _selectedDocumentFontOption;
     private RecentFileEntry? _selectedRecentFile;
     private bool _isSelectingRecentFile;
@@ -62,6 +70,16 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         ToggleEditCommand = new RelayCommand(ToggleEdit, () => HasDocument);
         ToggleSidebarCommand = new RelayCommand(ToggleSidebar);
         ToggleThemeCommand = new RelayCommand(ToggleTheme);
+
+        _editorPreviewTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(280)
+        };
+        _editorPreviewTimer.Tick += (_, _) =>
+        {
+            _editorPreviewTimer.Stop();
+            RenderEditorPreview();
+        };
 
         foreach (var item in _recentFileService.Load())
         {
@@ -92,6 +110,12 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         new(TypographyPreset.Comfortable, "편안하게"),
         new(TypographyPreset.Compact, "촘촘하게"),
         new(TypographyPreset.Editorial, "매거진")
+    ];
+
+    public IReadOnlyList<SelectionOption<EditorMode>> EditorModeOptions { get; } =
+    [
+        new(EditorMode.Markdown, "Markdown"),
+        new(EditorMode.SplitPreview, "미리보며 편집")
     ];
 
     public IReadOnlyList<DocumentFontOption> DocumentFontOptions { get; } =
@@ -193,6 +217,12 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         private set => SetProperty(ref _document, value);
     }
 
+    public FlowDocument? EditorPreviewDocument
+    {
+        get => _editorPreviewDocument;
+        private set => SetProperty(ref _editorPreviewDocument, value);
+    }
+
     public bool HasDocument => !string.IsNullOrWhiteSpace(CurrentFilePath);
 
     public string MarkdownText
@@ -200,9 +230,10 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         get => _markdownText;
         set
         {
-            if (SetProperty(ref _markdownText, value) && HasDocument)
+            if (SetProperty(ref _markdownText, value) && HasDocument && !_isLoadingDocument)
             {
                 IsDirty = true;
+                ScheduleEditorPreviewRender();
             }
         }
     }
@@ -240,6 +271,24 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     {
         get => _sidebarWidth;
         private set => SetProperty(ref _sidebarWidth, value);
+    }
+
+    public GridLength SidebarGapWidth
+    {
+        get => _sidebarGapWidth;
+        private set => SetProperty(ref _sidebarGapWidth, value);
+    }
+
+    public GridLength EditorPreviewWidth
+    {
+        get => _editorPreviewWidth;
+        private set => SetProperty(ref _editorPreviewWidth, value);
+    }
+
+    public GridLength EditorPreviewGapWidth
+    {
+        get => _editorPreviewGapWidth;
+        private set => SetProperty(ref _editorPreviewGapWidth, value);
     }
 
     public double SidebarOpacity
@@ -302,6 +351,19 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         }
     }
 
+    public EditorMode SelectedEditorMode
+    {
+        get => _selectedEditorMode;
+        set
+        {
+            if (SetProperty(ref _selectedEditorMode, value))
+            {
+                UpdateEditorPreviewLayout();
+                ScheduleEditorPreviewRender();
+            }
+        }
+    }
+
     public RecentFileEntry? SelectedRecentFile
     {
         get => _selectedRecentFile;
@@ -334,6 +396,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     public void Dispose()
     {
+        _editorPreviewTimer.Stop();
         _fileWatcherService.Dispose();
     }
 
@@ -362,6 +425,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
         try
         {
+            _isLoadingDocument = true;
             RenderStatus = "렌더링 중...";
             var started = DateTime.UtcNow;
             var markdown = await File.ReadAllTextAsync(path);
@@ -402,6 +466,11 @@ public sealed class MainViewModel : ObservableObject, IDisposable
             RenderStatus = "렌더링 실패";
             Document = new FlowDocument(new Paragraph(new Run(ex.Message)));
         }
+        finally
+        {
+            _isLoadingDocument = false;
+            RenderEditorPreview();
+        }
     }
 
     private async Task SaveAsync()
@@ -422,6 +491,13 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     {
         if (HasDocument)
         {
+            if (IsDirty)
+            {
+                RenderCurrentMarkdownPreview();
+                RenderEditorPreview();
+                return;
+            }
+
             await LoadFileAsync(CurrentFilePath, addToRecent: false);
         }
     }
@@ -467,6 +543,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         _tweenService.Animate(start, target, TimeSpan.FromMilliseconds(220), value =>
         {
             SidebarWidth = new GridLength(value);
+            SidebarGapWidth = new GridLength(Math.Max(0, 14 * (value / 286)));
             SidebarOpacity = target == 0 ? Math.Max(0, value / 286) : Math.Min(1, value / 286);
         });
     }
@@ -478,6 +555,89 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     private void ToggleEdit()
     {
-        IsEditing = !IsEditing;
+        if (IsEditing)
+        {
+            RenderCurrentMarkdownPreview();
+            IsEditing = false;
+            return;
+        }
+
+        IsEditing = true;
+        UpdateEditorPreviewLayout();
+        RenderEditorPreview();
+    }
+
+    private void UpdateEditorPreviewLayout()
+    {
+        if (SelectedEditorMode == EditorMode.SplitPreview)
+        {
+            EditorPreviewGapWidth = new GridLength(14);
+            EditorPreviewWidth = new GridLength(1, GridUnitType.Star);
+        }
+        else
+        {
+            EditorPreviewGapWidth = new GridLength(0);
+            EditorPreviewWidth = new GridLength(0);
+        }
+    }
+
+    private void ScheduleEditorPreviewRender()
+    {
+        if (!IsEditing || SelectedEditorMode != EditorMode.SplitPreview)
+        {
+            return;
+        }
+
+        _editorPreviewTimer.Stop();
+        _editorPreviewTimer.Start();
+    }
+
+    private void RenderEditorPreview()
+    {
+        if (!HasDocument || SelectedEditorMode != EditorMode.SplitPreview)
+        {
+            EditorPreviewDocument = null;
+            return;
+        }
+
+        var rendered = _rendererService.Render(MarkdownText, GetCurrentBaseDirectory());
+        EditorPreviewDocument = rendered.Document;
+    }
+
+    private void RenderCurrentMarkdownPreview()
+    {
+        if (!HasDocument)
+        {
+            return;
+        }
+
+        try
+        {
+            RenderStatus = "미리보기 갱신";
+            var rendered = _rendererService.Render(MarkdownText, GetCurrentBaseDirectory());
+            Document = rendered.Document;
+
+            TableOfContents.Clear();
+            foreach (var item in rendered.TableOfContents)
+            {
+                TableOfContents.Add(item);
+            }
+
+            DocumentInfo =
+                $"상태: 저장 전 미리보기\n" +
+                $"줄 수: {rendered.LineCount:N0}\n" +
+                $"단어 수: {rendered.WordCount:N0}\n" +
+                $"제목 수: {rendered.HeadingCount:N0}";
+        }
+        catch (Exception ex)
+        {
+            RenderStatus = "미리보기 실패";
+            Document = new FlowDocument(new Paragraph(new Run(ex.Message)));
+        }
+    }
+
+    private string GetCurrentBaseDirectory()
+    {
+        return Path.GetDirectoryName(CurrentFilePath) ?? string.Empty;
     }
 }

@@ -13,3 +13,9 @@ public enum TypographyPreset
     Compact,
     Editorial
 }
+
+public enum EditorMode
+{
+    Markdown,
+    SplitPreview
+}
