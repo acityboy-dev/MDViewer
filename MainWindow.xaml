@@ -110,7 +110,7 @@
                     <Button Style="{StaticResource ToolbarIconButtonStyle}"
                             Content="◐"
                             ToolTip="테마 전환"
-                            Command="{Binding ToggleThemeCommand}" />
+                            Click="ToggleTheme_Click" />
                     <Button Style="{StaticResource ToolbarIconButtonStyle}"
                             ToolTip="설정"
                             Click="Settings_Click">
@@ -303,7 +303,8 @@
                                                   VerticalScrollBarVisibility="Auto"
                                                   HorizontalScrollBarVisibility="Disabled"
                                                   Background="Transparent"
-                                                  IsToolBarVisible="False">
+                                                  IsToolBarVisible="False"
+                                                  PreviewMouseWheel="DocumentViewer_PreviewMouseWheel">
                             <FlowDocumentScrollViewer.Style>
                                 <Style TargetType="FlowDocumentScrollViewer">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -316,7 +317,8 @@
                             </FlowDocumentScrollViewer.Style>
                         </FlowDocumentScrollViewer>
                         <TextBox x:Name="EditorTextBox"
-                                 Text="{Binding MarkdownText, UpdateSourceTrigger=PropertyChanged}">
+                                 Text="{Binding MarkdownText, UpdateSourceTrigger=PropertyChanged}"
+                                 PreviewMouseWheel="EditorTextBox_PreviewMouseWheel">
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource MarkdownEditorTextBoxStyle}">
                                     <Setter Property="Visibility" Value="Collapsed" />

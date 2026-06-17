@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
+using System.Windows.Media.Animation;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.IO;
@@ -14,6 +15,9 @@ namespace MDViewer;
 
 public partial class MainWindow : Window
 {
+    private const double DocumentWheelScale = 1.45;
+    private const double EditorWheelScale = 1.35;
+
     private readonly MainViewModel _viewModel;
     private readonly DwmBackdropService _dwmBackdropService;
     private ScrollViewer? _documentScrollViewer;
@@ -100,6 +104,25 @@ public partial class MainWindow : Window
         }
     }
 
+    private void DocumentViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if (GetDocumentScrollViewer() is not { } scrollViewer)
+        {
+            return;
+        }
+
+        scrollViewer.ScrollToVerticalOffset(
+            Math.Clamp(scrollViewer.VerticalOffset - (e.Delta * DocumentWheelScale), 0, scrollViewer.ScrollableHeight));
+        e.Handled = true;
+    }
+
+    private void EditorTextBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        EditorTextBox.ScrollToVerticalOffset(
+            Math.Clamp(EditorTextBox.VerticalOffset - (e.Delta * EditorWheelScale), 0, EditorTextBox.ExtentHeight));
+        e.Handled = true;
+    }
+
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
         var settingsWindow = new SettingsWindow
@@ -108,6 +131,27 @@ public partial class MainWindow : Window
             DataContext = _viewModel
         };
         settingsWindow.ShowDialog();
+    }
+
+    private void ToggleTheme_Click(object sender, RoutedEventArgs e)
+    {
+        var fadeOut = new DoubleAnimation(1, 0.42, TimeSpan.FromMilliseconds(95))
+        {
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+        };
+
+        fadeOut.Completed += (_, _) =>
+        {
+            _viewModel.ToggleThemeCommand.Execute(null);
+
+            var fadeIn = new DoubleAnimation(0.42, 1, TimeSpan.FromMilliseconds(145))
+            {
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            WindowFrame.BeginAnimation(OpacityProperty, fadeIn);
+        };
+
+        WindowFrame.BeginAnimation(OpacityProperty, fadeOut);
     }
 
     private void CurrentFilePath_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
