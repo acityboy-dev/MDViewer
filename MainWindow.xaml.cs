@@ -219,6 +219,7 @@ public partial class MainWindow : Window
     {
         var rounded = WindowState != WindowState.Maximized;
         WindowFrame.CornerRadius = rounded ? new CornerRadius(18) : new CornerRadius(0);
+        TitleBarSurface.Padding = rounded ? new Thickness(0) : new Thickness(8, 0, 8, 0);
         _dwmBackdropService.ApplyRoundedCorners(this, rounded);
     }
 

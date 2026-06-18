@@ -168,22 +168,12 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid Margin="16,14,16,10">
-                        <StackPanel>
+                        <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="{DynamicResource LibraryTitle}"
                                        Style="{StaticResource PanelTitleStyle}" />
                             <TextBlock Text="{DynamicResource LibrarySubtitle}"
                                        Style="{StaticResource PanelSubtitleStyle}" />
                         </StackPanel>
-                        <Button HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                Style="{StaticResource ToolbarIconButtonStyle}"
-                                ToolTip="{DynamicResource CollapseLibraryTooltip}"
-                                Command="{Binding ToggleSidebarCommand}">
-                            <Path Style="{StaticResource ToolbarPathStyle}"
-                                  Width="8"
-                                  Height="13"
-                                  Data="M7,1 L1,7 L7,13" />
-                        </Button>
                     </Grid>
                     <TabControl Grid.Row="1"
                                 Style="{StaticResource MinimalTabControlStyle}">

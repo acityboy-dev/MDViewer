@@ -17,13 +17,15 @@
                             CornerRadius="0"
                             GlassFrameThickness="0"
                             NonClientFrameEdges="None"
-                            ResizeBorderThickness="8"
+                            ResizeBorderThickness="0"
                             UseAeroCaptionButtons="False" />
     </shell:WindowChrome.WindowChrome>
 
     <Border x:Name="WindowFrame"
-            Background="{DynamicResource AppBackgroundBrush}"
-            CornerRadius="18"
+            Background="{DynamicResource SettingsWindowBrush}"
+            BorderBrush="{DynamicResource HairlineBrush}"
+            BorderThickness="1"
+            CornerRadius="10"
             ClipToBounds="True">
         <Grid>
             <Grid.RowDefinitions>
@@ -56,6 +58,7 @@
             </Border>
 
             <ScrollViewer Grid.Row="1"
+                          Background="{DynamicResource SettingsBodyBrush}"
                           VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="22">
                     <TextBlock Text="{DynamicResource ViewSection}"

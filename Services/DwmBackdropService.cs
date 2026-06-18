@@ -14,19 +14,19 @@ public sealed class DwmBackdropService
     private const int AccentEnableAcrylicblurbehind = 4;
     private const int WcaAccentPolicy = 19;
 
-    public void Apply(Window window)
+    public void Apply(Window window, bool isDark = false)
     {
         if (window.IsLoaded)
         {
             PrepareTransparentClientArea(window);
-            ApplyAcrylicBlur(new WindowInteropHelper(window).Handle);
+            ApplyAcrylicBlur(new WindowInteropHelper(window).Handle, isDark);
             return;
         }
 
         window.SourceInitialized += (_, _) =>
         {
             PrepareTransparentClientArea(window);
-            ApplyAcrylicBlur(new WindowInteropHelper(window).Handle);
+            ApplyAcrylicBlur(new WindowInteropHelper(window).Handle, isDark);
         };
     }
 
@@ -65,7 +65,7 @@ public sealed class DwmBackdropService
         }
     }
 
-    private static void ApplyAcrylicBlur(IntPtr hwnd)
+    private static void ApplyAcrylicBlur(IntPtr hwnd, bool isDark)
     {
         if (hwnd == IntPtr.Zero || !OperatingSystem.IsWindowsVersionAtLeast(10, 0))
         {
@@ -76,7 +76,9 @@ public sealed class DwmBackdropService
         {
             AccentState = AccentEnableAcrylicblurbehind,
             AccentFlags = 2,
-            GradientColor = ToAbgr(0x58, 0x10, 0x15, 0x20)
+            GradientColor = isDark
+                ? ToAbgr(0x58, 0x10, 0x15, 0x20)
+                : ToAbgr(0x72, 0xF4, 0xF6, 0xFA)
         };
 
         var accentSize = Marshal.SizeOf<AccentPolicy>();

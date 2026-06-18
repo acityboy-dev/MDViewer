@@ -4,12 +4,15 @@
     <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
     <SolidColorBrush x:Key="AccentSoftBrush" Color="#EAF1FF" />
     <SolidColorBrush x:Key="AppBackgroundBrush" Color="#66F6F7FB" />
+    <SolidColorBrush x:Key="SettingsWindowBrush" Color="#F8FAFC" />
+    <SolidColorBrush x:Key="SettingsBodyBrush" Color="#EEF2F6" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#F4F6F9" />
     <SolidColorBrush x:Key="TitleBarBrush" Color="#B8F9FAFC" />
     <SolidColorBrush x:Key="PanelBrush" Color="#CCFFFFFF" />
     <SolidColorBrush x:Key="DocumentBrush" Color="#F8FFFFFF" />
-    <SolidColorBrush x:Key="EmptyStateBrush" Color="#EFFFFFFF" />
-    <SolidColorBrush x:Key="HoverBrush" Color="#F0F5FF" />
-    <SolidColorBrush x:Key="PressedBrush" Color="#DEE9FF" />
+    <SolidColorBrush x:Key="EmptyStateBrush" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="HoverBrush" Color="#E8EEF7" />
+    <SolidColorBrush x:Key="PressedBrush" Color="#DCE6F5" />
     <SolidColorBrush x:Key="HairlineBrush" Color="#1F0B1220" />
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="#111827" />
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="#374151" />

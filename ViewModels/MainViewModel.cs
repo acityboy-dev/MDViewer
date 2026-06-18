@@ -243,7 +243,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         }
     }
 
-    public string ModeLabel => IsEditing ? Localize("ModeEdit") : Localize("ModeView");
+    public string ModeLabel => IsEditing ? Localize("ModeView") : Localize("ModeEdit");
 
     public bool IsDirty
     {
@@ -312,8 +312,10 @@ public sealed class MainViewModel : ObservableObject, IDisposable
                 _themeService.ApplyTheme(value);
                 if (_window is not null)
                 {
-                    _dwmBackdropService.ApplyDarkCaption(_window, value == ThemeMode.Dark);
+                    _dwmBackdropService.Apply(_window, _themeService.IsDarkTheme);
+                    _dwmBackdropService.ApplyDarkCaption(_window, _themeService.IsDarkTheme);
                 }
+                OnPropertyChanged(nameof(IsDarkTheme));
                 _ = ReloadAsync();
             }
         }
@@ -375,6 +377,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     }
 
     public string Localize(string key) => _languageService.Get(key);
+    public bool IsDarkTheme => _themeService.IsDarkTheme;
 
     public RecentFileEntry? SelectedRecentFile
     {
@@ -391,7 +394,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public void AttachWindow(Window window)
     {
         _window = window;
-        _dwmBackdropService.ApplyDarkCaption(window, SelectedThemeMode == ThemeMode.Dark);
+        _dwmBackdropService.ApplyDarkCaption(window, _themeService.IsDarkTheme);
         SelectedDocumentFontOption ??= DocumentFontOptions.FirstOrDefault(option => option.Id == "system");
     }
 

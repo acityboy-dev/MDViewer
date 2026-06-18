@@ -8,6 +8,7 @@ namespace MDViewer.Services;
 public sealed class ThemeService
 {
     public ThemeMode CurrentTheme { get; private set; } = ThemeMode.Light;
+    public bool IsDarkTheme { get; private set; }
     public TypographyPreset CurrentTypography { get; private set; } = TypographyPreset.Comfortable;
     public FontFamily CurrentDocumentFontFamily { get; private set; } = new("Malgun Gothic, Segoe UI");
 
@@ -15,6 +16,7 @@ public sealed class ThemeService
     {
         CurrentTheme = themeMode;
         var effectiveTheme = themeMode == ThemeMode.System ? GetSystemTheme() : themeMode;
+        IsDarkTheme = effectiveTheme == ThemeMode.Dark;
         var source = new Uri($"Resources/Theme.{effectiveTheme}.xaml", UriKind.Relative);
         var dictionaries = Application.Current.Resources.MergedDictionaries;
 
