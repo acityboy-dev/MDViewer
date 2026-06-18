@@ -1,5 +1,9 @@
 # MarkFlow
 
+[한국어](README.md) | [English](README.en.md)
+
+**Windows를 위한 심플한 Markdown 에디터**
+
 MarkFlow는 Windows 10/11 환경을 대상으로 하는 .NET 9 WPF 기반 Markdown 문서 뷰어 겸 편집기입니다. WebView 중심 렌더링 대신 Markdig와 WPF `FlowDocument`를 사용해 가볍게 동작하도록 구성했으며, Windows 네이티브 UI 감성과 빠른 문서 전환을 목표로 합니다.
 
 ## 핵심 기능
