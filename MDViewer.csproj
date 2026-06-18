@@ -10,6 +10,9 @@
     <ApplicationIcon>Assets\MarkFlow.ico</ApplicationIcon>
     <AssemblyName>MarkFlow</AssemblyName>
     <Product>MarkFlow</Product>
+    <Copyright>Copyright 2026 acityboy-dev</Copyright>
+    <PackageLicenseExpression>PolyForm-Noncommercial-1.0.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/acityboy-dev/MDViewer</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

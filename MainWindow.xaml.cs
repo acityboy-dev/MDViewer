@@ -41,7 +41,8 @@ public partial class MainWindow : Window
             recentFileService,
             fileWatcherService,
             tweenService,
-            _dwmBackdropService);
+            _dwmBackdropService,
+            App.LanguageService);
 
         DataContext = _viewModel;
         Loaded += OnLoaded;
@@ -248,17 +249,17 @@ public partial class MainWindow : Window
         {
             "h1" => PrefixLine(textBox, "# "),
             "h2" => PrefixLine(textBox, "## "),
-            "bold" => WrapSelection(textBox, "**", "**", "굵은 텍스트"),
-            "italic" => WrapSelection(textBox, "*", "*", "기울임 텍스트"),
+            "bold" => WrapSelection(textBox, "**", "**", _viewModel.Localize("PlaceholderBold")),
+            "italic" => WrapSelection(textBox, "*", "*", _viewModel.Localize("PlaceholderItalic")),
             "code" => WrapSelection(textBox, "`", "`", "code"),
             "codeblock" => string.IsNullOrEmpty(selected) ? "```csharp\r\n\r\n```" : $"```\r\n{selected}\r\n```",
             "quote" => PrefixLine(textBox, "> "),
             "ul" => PrefixLine(textBox, "- "),
             "ol" => PrefixLine(textBox, "1. "),
             "task" => PrefixLine(textBox, "- [ ] "),
-            "link" => string.IsNullOrEmpty(selected) ? "[링크 텍스트](https://)" : $"[{selected}](https://)",
-            "image" => "![이미지 설명](path/to/image.png)",
-            "table" => "| 항목 | 설명 |\r\n| --- | --- |\r\n| 값 | 내용 |",
+            "link" => string.IsNullOrEmpty(selected) ? $"[{_viewModel.Localize("PlaceholderLink")}](https://)" : $"[{selected}](https://)",
+            "image" => $"![{_viewModel.Localize("PlaceholderImage")}](path/to/image.png)",
+            "table" => $"| {_viewModel.Localize("PlaceholderTableItem")} | {_viewModel.Localize("PlaceholderTableDescription")} |\r\n| --- | --- |\r\n| {_viewModel.Localize("PlaceholderTableValue")} | {_viewModel.Localize("PlaceholderTableContent")} |",
             "hr" => "\r\n---\r\n",
             _ => string.Empty
         };

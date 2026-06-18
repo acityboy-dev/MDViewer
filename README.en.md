@@ -15,6 +15,7 @@ MarkFlow is a Markdown viewer and editor built with .NET 9 and WPF for Windows 1
 - Raw Markdown and split editor/preview modes
 - Clear indicators for unsaved changes
 - Light, Dark, and System themes
+- Korean and English application UI with a saved language preference
 - Typography presets and cached Korean Google Fonts
 - Windows legacy acrylic blur backdrop
 - Custom title bar, rounded window corners, and caption controls
@@ -92,6 +93,10 @@ Supported mappings include:
 ### ThemeService
 
 Applies Light, Dark, or System themes and provides typography values. Themes are switched by replacing the merged `Resources/Theme.Light.xaml` and `Resources/Theme.Dark.xaml` resource dictionaries.
+
+### LanguageService
+
+Switches the Korean and English string resource dictionaries at runtime and applies the matching culture. The selected language is stored in `%APPDATA%\MarkFlow\settings.json` and restored on the next launch.
 
 ### DwmBackdropService
 
@@ -238,4 +243,6 @@ Keeping release discovery separate from installation will allow updates to evolv
 
 ## License
 
-No license file is included yet. Add a `LICENSE` before distributing MarkFlow publicly for general reuse.
+MarkFlow is released under the [PolyForm Noncommercial 1.0.0](LICENSE). You may inspect, modify, study, and redistribute the source for personal and noncommercial purposes. Commercial use, including sale or paid redistribution, is not permitted.
+
+This is a **source-available license**, not an OSI-approved open-source license. Contact the copyright holder separately for commercial licensing.

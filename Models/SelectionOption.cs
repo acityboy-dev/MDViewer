@@ -1,7 +1,11 @@
+using MDViewer.Utilities;
+
 namespace MDViewer.Models;
 
-public sealed class SelectionOption<T>
+public sealed class SelectionOption<T> : ObservableObject
 {
+    private string _label;
+
     public SelectionOption(T value, string label)
         : this(value, label, null)
     {
@@ -10,12 +14,16 @@ public sealed class SelectionOption<T>
     public SelectionOption(T value, string label, string? description)
     {
         Value = value;
-        Label = label;
+        _label = label;
         Description = description;
     }
 
     public T Value { get; }
-    public string Label { get; }
+    public string Label
+    {
+        get => _label;
+        set => SetProperty(ref _label, value);
+    }
     public string? Description { get; }
 
     public override string ToString() => Label;

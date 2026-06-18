@@ -76,21 +76,25 @@
                             VerticalAlignment="Center"
                             shell:WindowChrome.IsHitTestVisibleInChrome="True">
                     <Button Style="{StaticResource ToolbarIconButtonStyle}"
-                            Content="☰"
-                            ToolTip="라이브러리 접기/펼치기"
-                            Command="{Binding ToggleSidebarCommand}" />
+                            ToolTip="{DynamicResource ToggleLibraryTooltip}"
+                            Command="{Binding ToggleSidebarCommand}">
+                        <Path Style="{StaticResource ToolbarPathStyle}"
+                              Data="M2,3.5 L14,3.5 M2,8 L14,8 M2,12.5 L14,12.5" />
+                    </Button>
                     <Button Style="{StaticResource ToolbarButtonStyle}"
-                            Content="열기"
+                            Content="{DynamicResource Open}"
                             Command="{Binding OpenFileCommand}" />
                     <Button Style="{StaticResource ToolbarIconButtonStyle}"
-                            Content="↻"
-                            ToolTip="다시 렌더링"
-                            Command="{Binding ReloadCommand}" />
+                            ToolTip="{DynamicResource ReloadTooltip}"
+                            Command="{Binding ReloadCommand}">
+                        <Path Style="{StaticResource ToolbarPathStyle}"
+                              Data="M13.5,5.5 L13.5,2 L10,2 M13.2,2.4 C11.9,1.2 10.1,0.8 8.3,1.1 C5.1,1.6 2.8,4.4 2.8,7.6 C2.8,11.3 5.8,14.2 9.4,14.2 C11.8,14.2 13.9,13 15,11.1" />
+                    </Button>
                     <Button Style="{StaticResource ToolbarButtonStyle}"
                             Content="{Binding ModeLabel}"
                             Command="{Binding ToggleEditCommand}" />
                     <Button Style="{StaticResource ToolbarButtonStyle}"
-                            Content="저장"
+                            Content="{DynamicResource Save}"
                             Command="{Binding SaveCommand}" />
                     <TextBlock Text="{Binding CurrentFilePath}"
                                Margin="12,0,0,0"
@@ -108,11 +112,13 @@
                             Margin="0,0,8,0"
                             shell:WindowChrome.IsHitTestVisibleInChrome="True">
                     <Button Style="{StaticResource ToolbarIconButtonStyle}"
-                            Content="◐"
-                            ToolTip="테마 전환"
-                            Click="ToggleTheme_Click" />
+                            ToolTip="{DynamicResource ThemeTooltip}"
+                            Click="ToggleTheme_Click">
+                        <Path Style="{StaticResource ToolbarPathStyle}"
+                              Data="M11.8,12.8 C7.9,13.3 4.6,10.3 4.6,6.5 C4.6,4.2 5.8,2.2 7.7,1.1 C4.1,1.3 1.3,4.3 1.3,8 C1.3,11.9 4.5,15 8.4,15 C11.1,15 13.5,13.5 14.7,11.2 C13.9,12 12.9,12.6 11.8,12.8 Z" />
+                    </Button>
                     <Button Style="{StaticResource ToolbarIconButtonStyle}"
-                            ToolTip="설정"
+                            ToolTip="{DynamicResource SettingsTooltip}"
                             Click="Settings_Click">
                         <Path Width="14"
                               Height="14"
@@ -163,21 +169,25 @@
                     </Grid.RowDefinitions>
                     <Grid Margin="16,14,16,10">
                         <StackPanel>
-                            <TextBlock Text="라이브러리"
+                            <TextBlock Text="{DynamicResource LibraryTitle}"
                                        Style="{StaticResource PanelTitleStyle}" />
-                            <TextBlock Text="최근 Markdown 파일"
+                            <TextBlock Text="{DynamicResource LibrarySubtitle}"
                                        Style="{StaticResource PanelSubtitleStyle}" />
                         </StackPanel>
                         <Button HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
                                 Style="{StaticResource ToolbarIconButtonStyle}"
-                                Content="‹"
-                                ToolTip="라이브러리 접기"
-                                Command="{Binding ToggleSidebarCommand}" />
+                                ToolTip="{DynamicResource CollapseLibraryTooltip}"
+                                Command="{Binding ToggleSidebarCommand}">
+                            <Path Style="{StaticResource ToolbarPathStyle}"
+                                  Width="8"
+                                  Height="13"
+                                  Data="M7,1 L1,7 L7,13" />
+                        </Button>
                     </Grid>
                     <TabControl Grid.Row="1"
                                 Style="{StaticResource MinimalTabControlStyle}">
-                        <TabItem Header="파일">
+                        <TabItem Header="{DynamicResource FilesTab}">
                             <ListBox ItemsSource="{Binding RecentFiles}"
                                      SelectedItem="{Binding SelectedRecentFile}"
                                      Style="{StaticResource QuietListBoxStyle}">
@@ -197,7 +207,7 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
                         </TabItem>
-                        <TabItem Header="목차">
+                        <TabItem Header="{DynamicResource OutlineTab}">
                             <ListBox x:Name="OutlineListBox"
                                      ItemsSource="{Binding TableOfContents}"
                                      SelectionChanged="OutlineListBox_SelectionChanged"
@@ -273,7 +283,7 @@
                             <StackPanel DockPanel.Dock="Left"
                                         Orientation="Horizontal"
                                         Margin="0,0,14,0">
-                                <TextBlock Text="작성 도구"
+                                <TextBlock Text="{DynamicResource WritingTools}"
                                            Margin="0,0,10,0"
                                            VerticalAlignment="Center"
                                            FontSize="12"
@@ -287,20 +297,20 @@
                                           SelectedValue="{Binding SelectedEditorMode}" />
                             </StackPanel>
                             <WrapPanel>
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="H1" Tag="h1" ToolTip="제목 1" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="H2" Tag="h2" ToolTip="제목 2" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="B" Tag="bold" FontWeight="Bold" ToolTip="굵게" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="I" Tag="italic" FontStyle="Italic" ToolTip="기울임" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="`" Tag="code" ToolTip="인라인 코드" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="{}{ }" Tag="codeblock" ToolTip="코드 블록" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="❝" Tag="quote" ToolTip="인용문" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="•" Tag="ul" ToolTip="글머리 목록" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="1." Tag="ol" ToolTip="번호 목록" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="☐" Tag="task" ToolTip="체크박스" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="Link" Tag="link" ToolTip="링크" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="Img" Tag="image" ToolTip="이미지" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="표" Tag="table" ToolTip="표" Click="InsertMarkdown_Click" />
-                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="—" Tag="hr" ToolTip="구분선" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="H1" Tag="h1" ToolTip="{DynamicResource ToolHeading1}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="H2" Tag="h2" ToolTip="{DynamicResource ToolHeading2}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="B" Tag="bold" FontWeight="Bold" ToolTip="{DynamicResource ToolBold}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="I" Tag="italic" FontStyle="Italic" ToolTip="{DynamicResource ToolItalic}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="`" Tag="code" ToolTip="{DynamicResource ToolInlineCode}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="{}{ }" Tag="codeblock" ToolTip="{DynamicResource ToolCodeBlock}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="❝" Tag="quote" ToolTip="{DynamicResource ToolQuote}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="•" Tag="ul" ToolTip="{DynamicResource ToolBulletList}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="1." Tag="ol" ToolTip="{DynamicResource ToolNumberedList}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="☐" Tag="task" ToolTip="{DynamicResource ToolTask}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="Link" Tag="link" ToolTip="{DynamicResource ToolLink}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="Img" Tag="image" ToolTip="{DynamicResource ToolImage}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="Tbl" Tag="table" ToolTip="{DynamicResource ToolTable}" Click="InsertMarkdown_Click" />
+                                <Button Style="{StaticResource MarkdownToolButtonStyle}" Content="—" Tag="hr" ToolTip="{DynamicResource ToolRule}" Click="InsertMarkdown_Click" />
                             </WrapPanel>
                         </DockPanel>
                     </Border>
@@ -381,7 +391,7 @@
                                          Margin="0,0,8,0"
                                          VerticalAlignment="Center"
                                          Fill="{DynamicResource AccentBrush}" />
-                                <TextBlock Text="저장되지 않은 변경사항"
+                                <TextBlock Text="{DynamicResource UnsavedChanges}"
                                            FontSize="12"
                                            FontWeight="SemiBold"
                                            Foreground="{DynamicResource TextPrimaryBrush}" />
@@ -404,16 +414,16 @@
                                 </Style>
                             </Border.Style>
                             <StackPanel>
-                                <TextBlock Text="문서를 기다리는 중"
+                                <TextBlock Text="{DynamicResource EmptyTitle}"
                                            FontSize="24"
                                            FontWeight="SemiBold"
                                            TextAlignment="Center" />
-                                <TextBlock Text="열기 또는 끌어놓기로 시작하세요."
+                                <TextBlock Text="{DynamicResource EmptySubtitle}"
                                            Margin="0,10,0,22"
                                            TextWrapping="Wrap"
                                            TextAlignment="Center"
                                            Foreground="{DynamicResource TextMutedBrush}" />
-                                <Button Content="Markdown 열기"
+                                <Button Content="{DynamicResource OpenMarkdown}"
                                         Width="160"
                                         HorizontalAlignment="Center"
                                         Style="{StaticResource AccentButtonStyle}"
@@ -439,21 +449,23 @@
                         CornerRadius="34"
                         HorizontalAlignment="Center"
                         Background="{DynamicResource AccentBrush}">
-                    <TextBlock Text="↓"
-                               FontSize="34"
-                               FontWeight="SemiBold"
-                               Foreground="White"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Margin="0,-4,0,0" />
+                    <Path Width="28"
+                          Height="28"
+                          Stretch="Uniform"
+                          Stroke="White"
+                          StrokeThickness="1.8"
+                          StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round"
+                          StrokeLineJoin="Round"
+                          Data="M8,2 L8,12 M3.5,8 L8,12.5 L12.5,8 M2,15 L14,15" />
                 </Border>
-                <TextBlock Text="놓으면 열립니다"
+                <TextBlock Text="{DynamicResource DropTitle}"
                            Margin="0,22,0,0"
                            FontSize="30"
                            FontWeight="SemiBold"
                            TextAlignment="Center"
                            Foreground="White" />
-                <TextBlock Text="작업 흐름은 그대로 이어집니다."
+                <TextBlock Text="{DynamicResource DropSubtitle}"
                            Margin="0,8,0,0"
                            FontSize="14"
                            TextAlignment="Center"

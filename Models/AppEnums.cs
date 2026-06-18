@@ -19,3 +19,9 @@ public enum EditorMode
     Markdown,
     SplitPreview
 }
+
+public enum AppLanguage
+{
+    Korean,
+    English
+}

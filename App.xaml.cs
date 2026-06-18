@@ -1,18 +1,15 @@
 using System.Windows;
-using System.Globalization;
-using System.Threading;
+using MDViewer.Services;
 
 namespace MDViewer;
 
 public partial class App : Application
 {
+    public static LanguageService LanguageService { get; } = new();
+
     protected override void OnStartup(StartupEventArgs e)
     {
-        var culture = CultureInfo.GetCultureInfo("ko-KR");
-        Thread.CurrentThread.CurrentCulture = culture;
-        Thread.CurrentThread.CurrentUICulture = culture;
-        CultureInfo.DefaultThreadCurrentCulture = culture;
-        CultureInfo.DefaultThreadCurrentUICulture = culture;
+        LanguageService.Initialize();
         base.OnStartup(e);
     }
 }

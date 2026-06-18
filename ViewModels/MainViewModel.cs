@@ -20,12 +20,13 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private readonly FileWatcherService _fileWatcherService;
     private readonly TweenService _tweenService;
     private readonly DwmBackdropService _dwmBackdropService;
+    private readonly LanguageService _languageService;
     private readonly DispatcherTimer _editorPreviewTimer;
     private Window? _window;
     private string _currentFilePath = string.Empty;
-    private string _documentTitle = "제목 없음";
-    private string _documentSubtitle = "열린 파일이 없습니다";
-    private string _documentInfo = "Markdown 문서를 열면 문서 정보가 표시됩니다.";
+    private string _documentTitle = string.Empty;
+    private string _documentSubtitle = string.Empty;
+    private string _documentInfo = string.Empty;
     private string _renderStatus = string.Empty;
     private string _markdownText = string.Empty;
     private FlowDocument? _document;
@@ -43,6 +44,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private ThemeMode _selectedThemeMode = ThemeMode.Light;
     private TypographyPreset _selectedTypographyPreset = TypographyPreset.Comfortable;
     private EditorMode _selectedEditorMode = EditorMode.Markdown;
+    private AppLanguage _selectedLanguage;
     private DocumentFontOption? _selectedDocumentFontOption;
     private RecentFileEntry? _selectedRecentFile;
     private bool _isSelectingRecentFile;
@@ -54,7 +56,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         RecentFileService recentFileService,
         FileWatcherService fileWatcherService,
         TweenService tweenService,
-        DwmBackdropService dwmBackdropService)
+        DwmBackdropService dwmBackdropService,
+        LanguageService languageService)
     {
         _rendererService = rendererService;
         _themeService = themeService;
@@ -63,6 +66,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         _fileWatcherService = fileWatcherService;
         _tweenService = tweenService;
         _dwmBackdropService = dwmBackdropService;
+        _languageService = languageService;
+        _selectedLanguage = languageService.CurrentLanguage;
 
         OpenFileCommand = new AsyncRelayCommand(OpenFileWithDialogAsync);
         ReloadCommand = new AsyncRelayCommand(ReloadAsync, () => HasDocument);
@@ -81,6 +86,9 @@ public sealed class MainViewModel : ObservableObject, IDisposable
             RenderEditorPreview();
         };
 
+        RefreshLocalizedOptions();
+        RefreshLocalizedContent();
+
         foreach (var item in _recentFileService.Load())
         {
             RecentFiles.Add(item);
@@ -98,25 +106,10 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public string Title => HasDocument ? $"{DocumentTitle} - MarkFlow" : "MarkFlow";
     public ObservableCollection<RecentFileEntry> RecentFiles { get; } = [];
     public ObservableCollection<TableOfContentsItem> TableOfContents { get; } = [];
-    public IReadOnlyList<SelectionOption<ThemeMode>> ThemeModeOptions { get; } =
-    [
-        new(ThemeMode.Light, "라이트"),
-        new(ThemeMode.Dark, "다크"),
-        new(ThemeMode.System, "시스템")
-    ];
-
-    public IReadOnlyList<SelectionOption<TypographyPreset>> TypographyPresetOptions { get; } =
-    [
-        new(TypographyPreset.Comfortable, "편안하게"),
-        new(TypographyPreset.Compact, "촘촘하게"),
-        new(TypographyPreset.Editorial, "매거진")
-    ];
-
-    public IReadOnlyList<SelectionOption<EditorMode>> EditorModeOptions { get; } =
-    [
-        new(EditorMode.Markdown, "Markdown"),
-        new(EditorMode.SplitPreview, "미리보며 편집")
-    ];
+    public ObservableCollection<SelectionOption<ThemeMode>> ThemeModeOptions { get; } = [];
+    public ObservableCollection<SelectionOption<TypographyPreset>> TypographyPresetOptions { get; } = [];
+    public ObservableCollection<SelectionOption<EditorMode>> EditorModeOptions { get; } = [];
+    public ObservableCollection<SelectionOption<AppLanguage>> LanguageOptions { get; } = [];
 
     public IReadOnlyList<DocumentFontOption> DocumentFontOptions { get; } =
     [
@@ -250,7 +243,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         }
     }
 
-    public string ModeLabel => IsEditing ? "편집" : "보기";
+    public string ModeLabel => IsEditing ? Localize("ModeEdit") : Localize("ModeView");
 
     public bool IsDirty
     {
@@ -265,7 +258,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         }
     }
 
-    public string DirtyLabel => IsDirty ? "수정됨" : "저장됨";
+    public string DirtyLabel => IsDirty ? Localize("StateModified") : Localize("StateSaved");
 
     public GridLength SidebarWidth
     {
@@ -364,6 +357,25 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         }
     }
 
+    public AppLanguage SelectedLanguage
+    {
+        get => _selectedLanguage;
+        set
+        {
+            if (!SetProperty(ref _selectedLanguage, value))
+            {
+                return;
+            }
+
+            _languageService.ApplyLanguage(value);
+            RefreshLocalizedOptions();
+            RefreshLocalizedContent();
+            _ = ReloadAsync();
+        }
+    }
+
+    public string Localize(string key) => _languageService.Get(key);
+
     public RecentFileEntry? SelectedRecentFile
     {
         get => _selectedRecentFile;
@@ -404,8 +416,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     {
         var dialog = new OpenFileDialog
         {
-            Title = "Markdown 열기",
-            Filter = "Markdown 파일 (*.md;*.markdown)|*.md;*.markdown|모든 파일 (*.*)|*.*",
+            Title = Localize("FileDialogTitle"),
+            Filter = Localize("FileDialogFilter"),
             Multiselect = false
         };
 
@@ -419,14 +431,14 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     {
         if (!File.Exists(path))
         {
-            RenderStatus = "File not found";
+            RenderStatus = Localize("FileNotFound");
             return;
         }
 
         try
         {
             _isLoadingDocument = true;
-            RenderStatus = "렌더링 중...";
+            RenderStatus = Localize("Rendering");
             var started = DateTime.UtcNow;
             var markdown = await File.ReadAllTextAsync(path);
             var rendered = await _rendererService.RenderFileAsync(path);
@@ -445,12 +457,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
             }
 
             var fileInfo = new FileInfo(path);
-            DocumentInfo =
-                $"크기: {fileInfo.Length:N0} bytes\n" +
-                $"줄 수: {rendered.LineCount:N0}\n" +
-                $"단어 수: {rendered.WordCount:N0}\n" +
-                $"제목 수: {rendered.HeadingCount:N0}\n" +
-                $"수정일: {fileInfo.LastWriteTime:g}";
+            DocumentInfo = BuildDocumentInfo(fileInfo, rendered);
 
             if (addToRecent)
             {
@@ -463,7 +470,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
-            RenderStatus = "렌더링 실패";
+            RenderStatus = Localize("RenderFailed");
             Document = new FlowDocument(new Paragraph(new Run(ex.Message)));
         }
         finally
@@ -483,7 +490,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         _fileWatcherService.Stop();
         await File.WriteAllTextAsync(CurrentFilePath, MarkdownText);
         IsDirty = false;
-        RenderStatus = "저장됨";
+        RenderStatus = Localize("SavedStatus");
         await LoadFileAsync(CurrentFilePath, addToRecent: false);
     }
 
@@ -504,7 +511,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     private async Task ApplyDocumentFontAsync(DocumentFontOption option)
     {
-        RenderStatus = option.DownloadUrls.Count == 0 ? string.Empty : "폰트 준비 중...";
+        RenderStatus = option.DownloadUrls.Count == 0 ? string.Empty : Localize("PreparingFont");
         var fontFamily = await _fontCacheService.EnsureFontAsync(option);
         _themeService.ApplyDocumentFont(fontFamily);
         await ReloadAsync();
@@ -613,7 +620,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
         try
         {
-            RenderStatus = "미리보기 갱신";
+            RenderStatus = Localize("PreviewUpdated");
             var rendered = _rendererService.Render(MarkdownText, GetCurrentBaseDirectory());
             Document = rendered.Document;
 
@@ -624,14 +631,14 @@ public sealed class MainViewModel : ObservableObject, IDisposable
             }
 
             DocumentInfo =
-                $"상태: 저장 전 미리보기\n" +
-                $"줄 수: {rendered.LineCount:N0}\n" +
-                $"단어 수: {rendered.WordCount:N0}\n" +
-                $"제목 수: {rendered.HeadingCount:N0}";
+                $"{Localize("InfoStatus")}: {Localize("PreviewState")}\n" +
+                $"{Localize("InfoLines")}: {rendered.LineCount:N0}\n" +
+                $"{Localize("InfoWords")}: {rendered.WordCount:N0}\n" +
+                $"{Localize("InfoHeadings")}: {rendered.HeadingCount:N0}";
         }
         catch (Exception ex)
         {
-            RenderStatus = "미리보기 실패";
+            RenderStatus = Localize("PreviewFailed");
             Document = new FlowDocument(new Paragraph(new Run(ex.Message)));
         }
     }
@@ -639,5 +646,76 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private string GetCurrentBaseDirectory()
     {
         return Path.GetDirectoryName(CurrentFilePath) ?? string.Empty;
+    }
+
+    private string BuildDocumentInfo(FileInfo fileInfo, RenderedMarkdownDocument rendered)
+    {
+        return
+            $"{Localize("InfoSize")}: {fileInfo.Length:N0} bytes\n" +
+            $"{Localize("InfoLines")}: {rendered.LineCount:N0}\n" +
+            $"{Localize("InfoWords")}: {rendered.WordCount:N0}\n" +
+            $"{Localize("InfoHeadings")}: {rendered.HeadingCount:N0}\n" +
+            $"{Localize("InfoModified")}: {fileInfo.LastWriteTime:g}";
+    }
+
+    private void RefreshLocalizedOptions()
+    {
+        ReplaceOptions(ThemeModeOptions,
+        [
+            new(ThemeMode.Light, Localize("ThemeLight")),
+            new(ThemeMode.Dark, Localize("ThemeDark")),
+            new(ThemeMode.System, Localize("ThemeSystem"))
+        ]);
+        ReplaceOptions(TypographyPresetOptions,
+        [
+            new(TypographyPreset.Comfortable, Localize("TypographyComfortable")),
+            new(TypographyPreset.Compact, Localize("TypographyCompact")),
+            new(TypographyPreset.Editorial, Localize("TypographyEditorial"))
+        ]);
+        ReplaceOptions(EditorModeOptions,
+        [
+            new(EditorMode.Markdown, Localize("EditorMarkdown")),
+            new(EditorMode.SplitPreview, Localize("EditorSplit"))
+        ]);
+        ReplaceOptions(LanguageOptions,
+        [
+            new(AppLanguage.Korean, Localize("LanguageKorean")),
+            new(AppLanguage.English, Localize("LanguageEnglish"))
+        ]);
+    }
+
+    private void RefreshLocalizedContent()
+    {
+        if (!HasDocument)
+        {
+            DocumentTitle = Localize("Untitled");
+            DocumentSubtitle = Localize("NoOpenFile");
+            DocumentInfo = Localize("NoDocumentInfo");
+        }
+
+        OnPropertyChanged(nameof(ModeLabel));
+        OnPropertyChanged(nameof(DirtyLabel));
+    }
+
+    private static void ReplaceOptions<T>(ObservableCollection<SelectionOption<T>> target, IEnumerable<SelectionOption<T>> options)
+    {
+        var replacements = options.ToList();
+        var canUpdateInPlace = target.Count == replacements.Count
+            && target.Select(option => option.Value).SequenceEqual(replacements.Select(option => option.Value));
+
+        if (canUpdateInPlace)
+        {
+            for (var index = 0; index < target.Count; index++)
+            {
+                target[index].Label = replacements[index].Label;
+            }
+            return;
+        }
+
+        target.Clear();
+        foreach (var replacement in replacements)
+        {
+            target.Add(replacement);
+        }
     }
 }
