@@ -21,6 +21,7 @@ MarkFlow is a Markdown viewer and editor built with .NET 9 and WPF for Windows 1
 - Typography presets and cached Korean Google Fonts
 - Windows legacy acrylic blur backdrop
 - Custom title bar, rounded window corners, and caption controls
+- Always-on-top pinning available in regular and compact modes
 - Debounced file watching and document rendering
 
 ## Technology
@@ -102,7 +103,7 @@ Switches the Korean, English, and Japanese string resource dictionaries at runti
 
 ### AppSettingsService
 
-Stores the theme, typography, document font, document zoom, editor mode, file watching preference, and language in `%APPDATA%\MarkFlow\settings.json`. Settings are written through a temporary file and restored on the next launch.
+Stores the theme, typography, document font, document zoom, always-on-top preference, editor mode, file watching preference, and language in `%APPDATA%\MarkFlow\settings.json`. Settings are written through a temporary file and restored on the next launch.
 
 ### DwmBackdropService
 

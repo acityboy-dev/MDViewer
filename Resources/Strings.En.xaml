@@ -16,6 +16,7 @@
     <system:String x:Key="ZoomOutTooltip">Zoom out (Ctrl+-)</system:String>
     <system:String x:Key="ZoomResetTooltip">Reset zoom (Ctrl+0)</system:String>
     <system:String x:Key="ZoomInTooltip">Zoom in (Ctrl++)</system:String>
+    <system:String x:Key="AlwaysOnTopTooltip">Always on top</system:String>
     <system:String x:Key="LibraryTitle">Library</system:String>
     <system:String x:Key="LibrarySubtitle">Recent Markdown files</system:String>
     <system:String x:Key="FilesTab">Files</system:String>

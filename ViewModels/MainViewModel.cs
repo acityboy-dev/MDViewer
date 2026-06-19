@@ -45,6 +45,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private bool _isLoadingDocument;
     private bool _isFileWatchingEnabled = true;
     private int _zoomPercent = 100;
+    private bool _isAlwaysOnTop;
     private ThemeMode _selectedThemeMode = ThemeMode.Light;
     private TypographyPreset _selectedTypographyPreset = TypographyPreset.Comfortable;
     private EditorMode _selectedEditorMode = EditorMode.Markdown;
@@ -81,6 +82,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         _selectedEditorMode = settings.EditorMode;
         _isFileWatchingEnabled = settings.IsFileWatchingEnabled;
         _zoomPercent = NormalizeZoom(settings.ZoomPercent);
+        _isAlwaysOnTop = settings.IsAlwaysOnTop;
         _selectedDocumentFontOption = DocumentFontOptions.FirstOrDefault(option => option.Id == settings.DocumentFontId)
             ?? DocumentFontOptions.First(option => option.Id == "system");
 
@@ -98,6 +100,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         ZoomInCommand = new RelayCommand(ZoomIn, () => ZoomPercent < 200);
         ZoomOutCommand = new RelayCommand(ZoomOut, () => ZoomPercent > 50);
         ResetZoomCommand = new RelayCommand(ResetZoom, () => ZoomPercent != 100);
+        ToggleAlwaysOnTopCommand = new RelayCommand(ToggleAlwaysOnTop);
 
         _editorPreviewTimer = new DispatcherTimer
         {
@@ -184,6 +187,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public RelayCommand ZoomInCommand { get; }
     public RelayCommand ZoomOutCommand { get; }
     public RelayCommand ResetZoomCommand { get; }
+    public RelayCommand ToggleAlwaysOnTopCommand { get; }
 
     public string CurrentFilePath
     {
@@ -352,6 +356,12 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     }
 
     public string ZoomLabel => $"{ZoomPercent}%";
+
+    public bool IsAlwaysOnTop
+    {
+        get => _isAlwaysOnTop;
+        private set => SetProperty(ref _isAlwaysOnTop, value);
+    }
 
     public ThemeMode SelectedThemeMode
     {
@@ -656,6 +666,12 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private void ZoomOut() => SetZoom(ZoomPercent - 10);
 
     private void ResetZoom() => SetZoom(100);
+
+    private void ToggleAlwaysOnTop()
+    {
+        IsAlwaysOnTop = !IsAlwaysOnTop;
+        _appSettingsService.Update(settings => settings.IsAlwaysOnTop = IsAlwaysOnTop);
+    }
 
     private void SetZoom(int zoomPercent)
     {

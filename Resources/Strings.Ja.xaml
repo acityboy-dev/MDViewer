@@ -16,6 +16,7 @@
     <system:String x:Key="ZoomOutTooltip">縮小 (Ctrl+-)</system:String>
     <system:String x:Key="ZoomResetTooltip">倍率をリセット (Ctrl+0)</system:String>
     <system:String x:Key="ZoomInTooltip">拡大 (Ctrl++)</system:String>
+    <system:String x:Key="AlwaysOnTopTooltip">常に手前に表示</system:String>
     <system:String x:Key="LibraryTitle">ライブラリ</system:String>
     <system:String x:Key="LibrarySubtitle">最近使った Markdown ファイル</system:String>
     <system:String x:Key="FilesTab">ファイル</system:String>

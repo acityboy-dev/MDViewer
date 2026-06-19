@@ -16,6 +16,7 @@
     <system:String x:Key="ZoomOutTooltip">축소 (Ctrl+-)</system:String>
     <system:String x:Key="ZoomResetTooltip">배율 초기화 (Ctrl+0)</system:String>
     <system:String x:Key="ZoomInTooltip">확대 (Ctrl++)</system:String>
+    <system:String x:Key="AlwaysOnTopTooltip">항상 위</system:String>
     <system:String x:Key="LibraryTitle">라이브러리</system:String>
     <system:String x:Key="LibrarySubtitle">최근 Markdown 파일</system:String>
     <system:String x:Key="FilesTab">파일</system:String>

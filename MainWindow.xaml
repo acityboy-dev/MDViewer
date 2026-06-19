@@ -15,6 +15,7 @@
         Background="Transparent"
         Foreground="{DynamicResource TextPrimaryBrush}"
         FontFamily="{DynamicResource AppFontFamily}"
+        Topmost="{Binding IsAlwaysOnTop}"
         AllowsTransparency="False"
         AllowDrop="True"
         PreviewDragEnter="Root_DragEnter"
@@ -190,6 +191,21 @@
                     </StackPanel.Style>
                     <ContentControl Content="{Binding}"
                                     ContentTemplate="{StaticResource ZoomControlTemplate}" />
+                    <Button ToolTip="{DynamicResource AlwaysOnTopTooltip}"
+                            Command="{Binding ToggleAlwaysOnTopCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource ToolbarIconButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsAlwaysOnTop}" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+                                        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <Path Style="{StaticResource ToolbarPathStyle}"
+                              Data="M5,2 L11,2 M6,2 L6.6,5.8 L4,8.5 L12,8.5 L9.4,5.8 L10,2 M8,8.5 L8,14" />
+                    </Button>
                     <Button Style="{StaticResource ToolbarIconButtonStyle}"
                             ToolTip="{DynamicResource EnterCompactModeTooltip}"
                             Command="{Binding ToggleCompactCommand}">
@@ -227,6 +243,21 @@
                     </StackPanel.Style>
                     <ContentControl Content="{Binding}"
                                     ContentTemplate="{StaticResource ZoomControlTemplate}" />
+                    <Button ToolTip="{DynamicResource AlwaysOnTopTooltip}"
+                            Command="{Binding ToggleAlwaysOnTopCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource ToolbarIconButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsAlwaysOnTop}" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+                                        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <Path Style="{StaticResource ToolbarPathStyle}"
+                              Data="M5,2 L11,2 M6,2 L6.6,5.8 L4,8.5 L12,8.5 L9.4,5.8 L10,2 M8,8.5 L8,14" />
+                    </Button>
                     <Button Style="{StaticResource ToolbarIconButtonStyle}"
                             ToolTip="{DynamicResource ExitCompactModeTooltip}"
                             Command="{Binding ToggleCompactCommand}">
