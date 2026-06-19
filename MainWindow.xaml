@@ -45,7 +45,7 @@
           Background="Transparent"
           AllowDrop="True">
         <Grid.RowDefinitions>
-            <RowDefinition Height="44" />
+            <RowDefinition x:Name="TitleBarRow" Height="44" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 

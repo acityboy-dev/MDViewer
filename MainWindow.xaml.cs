@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Animation;
 using System.Windows.Input;
+using System.Windows.Shell;
 using System.Diagnostics;
 using System.IO;
 using MDViewer.Models;
@@ -219,7 +220,12 @@ public partial class MainWindow : Window
     {
         var rounded = WindowState != WindowState.Maximized;
         WindowFrame.CornerRadius = rounded ? new CornerRadius(18) : new CornerRadius(0);
-        TitleBarSurface.Padding = rounded ? new Thickness(0) : new Thickness(8, 0, 8, 0);
+        TitleBarRow.Height = new GridLength(rounded ? 44 : 52);
+        TitleBarSurface.Padding = rounded ? new Thickness(0) : new Thickness(8, 8, 8, 0);
+        if (WindowChrome.GetWindowChrome(this) is { } chrome)
+        {
+            chrome.CaptionHeight = rounded ? 44 : 52;
+        }
         _dwmBackdropService.ApplyRoundedCorners(this, rounded);
     }
 
@@ -344,13 +350,14 @@ public partial class MainWindow : Window
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
         base.OnMouseLeftButtonDown(e);
-        if (e.ClickCount == 2 && e.GetPosition(this).Y <= 44)
+        var titleBarHeight = TitleBarRow.ActualHeight;
+        if (e.ClickCount == 2 && e.GetPosition(this).Y <= titleBarHeight)
         {
             Maximize_Click(this, new RoutedEventArgs());
             return;
         }
 
-        if (e.ButtonState == MouseButtonState.Pressed && e.GetPosition(this).Y <= 44)
+        if (e.ButtonState == MouseButtonState.Pressed && e.GetPosition(this).Y <= titleBarHeight)
         {
             DragMove();
         }
