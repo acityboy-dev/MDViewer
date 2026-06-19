@@ -37,6 +37,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private GridLength _editorPreviewGapWidth = new(0);
     private double _sidebarOpacity = 1;
     private bool _isSidebarOpen = true;
+    private bool _sidebarWasOpenBeforeCompact = true;
+    private bool _isCompactMode;
     private bool _isEditing;
     private bool _isDirty;
     private bool _isLoadingDocument;
@@ -74,6 +76,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         SaveCommand = new AsyncRelayCommand(SaveAsync, () => HasDocument && IsDirty);
         ToggleEditCommand = new RelayCommand(ToggleEdit, () => HasDocument);
         ToggleSidebarCommand = new RelayCommand(ToggleSidebar);
+        ToggleCompactCommand = new RelayCommand(ToggleCompactMode);
         ToggleThemeCommand = new RelayCommand(ToggleTheme);
 
         _editorPreviewTimer = new DispatcherTimer
@@ -156,6 +159,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public AsyncRelayCommand SaveCommand { get; }
     public RelayCommand ToggleEditCommand { get; }
     public RelayCommand ToggleSidebarCommand { get; }
+    public RelayCommand ToggleCompactCommand { get; }
     public RelayCommand ToggleThemeCommand { get; }
 
     public string CurrentFilePath
@@ -288,6 +292,12 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     {
         get => _sidebarOpacity;
         private set => SetProperty(ref _sidebarOpacity, value);
+    }
+
+    public bool IsCompactMode
+    {
+        get => _isCompactMode;
+        private set => SetProperty(ref _isCompactMode, value);
     }
 
     public bool IsFileWatchingEnabled
@@ -547,8 +557,38 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     private void ToggleSidebar()
     {
+        if (IsCompactMode)
+        {
+            return;
+        }
+
         _isSidebarOpen = !_isSidebarOpen;
-        var target = _isSidebarOpen ? 286 : 0;
+        AnimateSidebar(_isSidebarOpen ? 286 : 0);
+    }
+
+    private void ToggleCompactMode()
+    {
+        if (!IsCompactMode)
+        {
+            _sidebarWasOpenBeforeCompact = _isSidebarOpen;
+            if (IsEditing)
+            {
+                RenderCurrentMarkdownPreview();
+                IsEditing = false;
+            }
+
+            IsCompactMode = true;
+            AnimateSidebar(0);
+            return;
+        }
+
+        IsCompactMode = false;
+        _isSidebarOpen = _sidebarWasOpenBeforeCompact;
+        AnimateSidebar(_isSidebarOpen ? 286 : 0);
+    }
+
+    private void AnimateSidebar(double target)
+    {
         var start = SidebarWidth.Value;
         _tweenService.Animate(start, target, TimeSpan.FromMilliseconds(220), value =>
         {

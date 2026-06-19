@@ -10,6 +10,8 @@
     <system:String x:Key="ReloadTooltip">Render again</system:String>
     <system:String x:Key="ThemeTooltip">Switch theme</system:String>
     <system:String x:Key="SettingsTooltip">Settings</system:String>
+    <system:String x:Key="EnterCompactModeTooltip">Full compact mode</system:String>
+    <system:String x:Key="ExitCompactModeTooltip">Exit compact mode</system:String>
     <system:String x:Key="LibraryTitle">Library</system:String>
     <system:String x:Key="LibrarySubtitle">Recent Markdown files</system:String>
     <system:String x:Key="FilesTab">Files</system:String>

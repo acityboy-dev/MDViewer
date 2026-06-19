@@ -10,6 +10,8 @@
     <system:String x:Key="ReloadTooltip">다시 렌더링</system:String>
     <system:String x:Key="ThemeTooltip">테마 전환</system:String>
     <system:String x:Key="SettingsTooltip">설정</system:String>
+    <system:String x:Key="EnterCompactModeTooltip">풀 컴팩트 모드</system:String>
+    <system:String x:Key="ExitCompactModeTooltip">컴팩트 모드 종료</system:String>
     <system:String x:Key="LibraryTitle">라이브러리</system:String>
     <system:String x:Key="LibrarySubtitle">최근 Markdown 파일</system:String>
     <system:String x:Key="FilesTab">파일</system:String>

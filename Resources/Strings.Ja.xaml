@@ -10,6 +10,8 @@
     <system:String x:Key="ReloadTooltip">再レンダリング</system:String>
     <system:String x:Key="ThemeTooltip">テーマを切り替え</system:String>
     <system:String x:Key="SettingsTooltip">設定</system:String>
+    <system:String x:Key="EnterCompactModeTooltip">フルコンパクトモード</system:String>
+    <system:String x:Key="ExitCompactModeTooltip">コンパクトモードを終了</system:String>
     <system:String x:Key="LibraryTitle">ライブラリ</system:String>
     <system:String x:Key="LibrarySubtitle">最近使った Markdown ファイル</system:String>
     <system:String x:Key="FilesTab">ファイル</system:String>
