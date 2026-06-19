@@ -306,10 +306,12 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0"
-                    Style="{StaticResource SurfacePanelStyle}"
-                    Opacity="{Binding SidebarOpacity}">
-                <Grid>
+            <Grid Grid.Column="0"
+                  Opacity="{Binding SidebarOpacity}">
+                <Border Style="{StaticResource DocumentShadowStyle}" />
+                <Border Style="{StaticResource DocumentHostStyle}">
+                <Grid Tag="21"
+                      SizeChanged="RoundedContent_SizeChanged">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -362,7 +364,8 @@
                         </TabItem>
                     </TabControl>
                 </Grid>
-            </Border>
+                </Border>
+            </Grid>
 
             <Grid Grid.Column="2">
                 <Border Style="{StaticResource DocumentShadowStyle}" />
