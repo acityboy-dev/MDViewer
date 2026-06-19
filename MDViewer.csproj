@@ -20,10 +20,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Tools\**\*.cs" />
+    <ProjectReference Include="Tools\MarkFlow.IconBuilder\MarkFlow.IconBuilder.csproj"
+                      ReferenceOutputAssembly="false"
+                      PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Assets\MarkFlow.ico" />
     <Resource Include="Assets\MarkFlow.png" />
-    <Resource Include="Assets\MarkFlow-64.png" />
-    <Resource Include="Assets\MarkFlow-32.png" />
+    <Resource Include="Assets\MarkFlow-*.png" />
   </ItemGroup>
+
+  <Target Name="GenerateMarkFlowIcons"
+          BeforeTargets="PrepareForBuild"
+          Inputs="$(MSBuildProjectDirectory)\Assets\MarkFlowLogo.svg;$(MSBuildProjectDirectory)\Tools\MarkFlow.IconBuilder\Program.cs;$(MSBuildProjectDirectory)\Tools\MarkFlow.IconBuilder\MarkFlow.IconBuilder.csproj"
+          Outputs="$(MSBuildProjectDirectory)\Assets\MarkFlow.ico;$(MSBuildProjectDirectory)\Assets\MarkFlow.png;$(MSBuildProjectDirectory)\Assets\MarkFlow-16.png;$(MSBuildProjectDirectory)\Assets\MarkFlow-20.png;$(MSBuildProjectDirectory)\Assets\MarkFlow-24.png;$(MSBuildProjectDirectory)\Assets\MarkFlow-32.png;$(MSBuildProjectDirectory)\Assets\MarkFlow-40.png;$(MSBuildProjectDirectory)\Assets\MarkFlow-48.png;$(MSBuildProjectDirectory)\Assets\MarkFlow-64.png;$(MSBuildProjectDirectory)\Assets\MarkFlow-128.png;$(MSBuildProjectDirectory)\Assets\MarkFlow-256.png">
+    <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)\Tools\MarkFlow.IconBuilder\MarkFlow.IconBuilder.csproj&quot; --configuration $(Configuration) --no-restore -- &quot;$(MSBuildProjectDirectory)\Assets\MarkFlowLogo.svg&quot; &quot;$(MSBuildProjectDirectory)\Assets&quot;" />
+  </Target>
 
 </Project>

@@ -38,10 +38,11 @@ MarkFlow is a Markdown viewer and editor built with .NET 9 and WPF for Windows 1
 
 ```text
 MDViewer/
-├─ Assets/                  # MarkFlow logo, PNG, and ICO resources
+├─ Assets/                  # MarkFlow SVG source and generated PNG/ICO assets
 ├─ Models/                  # Models and enums shared by views and services
 ├─ Resources/               # Shared styles and Light/Dark theme resources
 ├─ Services/                # Rendering, theme, DWM, fonts, recent files, file watching
+├─ Tools/MarkFlow.IconBuilder/ # Build-time SVG icon converter
 ├─ Utilities/               # MVVM commands and ObservableObject
 ├─ ViewModels/              # MainViewModel
 ├─ App.xaml                 # Application resource dictionaries
@@ -129,6 +130,12 @@ Watches the active file for external changes. Repeated `FileSystemWatcher` event
 
 Runs short UI transitions such as sidebar expansion and collapse without relying on a permanent `CompositionTarget.Rendering` loop.
 
+### Icon Build Pipeline
+
+`Assets/MarkFlowLogo.svg` is the single editable source for the MarkFlow icon. During builds, `Tools/MarkFlow.IconBuilder` renders 16, 20, 24, 32, 40, 48, 64, 128, 256, and 1024px PNG files and a multi-resolution `MarkFlow.ico`.
+
+The PNG and ICO files are build outputs and should not be edited directly. MSBuild runs the `GenerateMarkFlowIcons` target only when the SVG source or converter code changes.
+
 ## How It Works
 
 ### Opening a File
@@ -206,6 +213,7 @@ Before publishing a release, verify:
 
 - `MarkFlow.exe` starts correctly
 - Application and taskbar icons render correctly
+- PNG and ICO assets regenerate after changing the SVG source
 - Acrylic blur is active
 - File open, drop, and recent-file workflows work
 - Unsaved preview and save workflows work

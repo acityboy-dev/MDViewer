@@ -1,8 +1,45 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1024" height="1024" fill="none"/>
-  <path d="M170 178C170 140.445 200.445 110 238 110H642L854 322V846C854 883.555 823.555 914 786 914H238C200.445 914 170 883.555 170 846V178Z" fill="#F8FAFC"/>
-  <path d="M642 110V282C642 304.091 659.909 322 682 322H854L642 110Z" fill="#D7E3F8"/>
-  <path d="M286 674V334H358L512 560L666 334H738V674H666V459L532 666H492L358 459V674H286Z" fill="#2563EB"/>
-  <path d="M282 764C398 692 526 690 642 750C700 780 760 786 816 750" stroke="#14B8A6" stroke-width="54" stroke-linecap="round"/>
-  <path d="M286 806C410 758 510 766 622 816C696 849 760 850 818 814" stroke="#60A5FA" stroke-width="34" stroke-linecap="round" opacity="0.92"/>
+  <defs>
+    <linearGradient id="paperFill" x1="210" y1="130" x2="820" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EEF4FC"/>
+    </linearGradient>
+    <linearGradient id="markFlow" x1="290" y1="350" x2="730" y2="650" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#4F46E5"/>
+    </linearGradient>
+    <clipPath id="paperClip">
+      <path d="M170 178C170 140.445 200.445 110 238 110H642L854 322V846C854 883.555 823.555 914 786 914H238C200.445 914 170 883.555 170 846V178Z"/>
+    </clipPath>
+  </defs>
+
+  <path d="M170 178C170 140.445 200.445 110 238 110H642L854 322V846C854 883.555 823.555 914 786 914H238C200.445 914 170 883.555 170 846V178Z" fill="url(#paperFill)"/>
+  <path d="M642 110V282C642 304.091 659.909 322 682 322H854L642 110Z" fill="#D9E6FA"/>
+
+  <path d="M300 650V380C300 344 340 329 362 358L512 566L662 358C684 329 724 344 724 380V650"
+        stroke="url(#markFlow)"
+        stroke-width="76"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <g clip-path="url(#paperClip)">
+    <path d="M96 758C222 684 362 678 492 728C612 774 690 816 788 770C850 741 908 724 962 742"
+          stroke="#14B8A6"
+          stroke-width="54"
+          stroke-linecap="round"/>
+    <path d="M78 842C224 770 366 758 506 808C626 851 724 882 828 832C882 806 932 796 974 810"
+          stroke="#60A5FA"
+          stroke-width="34"
+          stroke-linecap="round"
+          opacity="0.94"/>
+  </g>
+
+  <path d="M170 178C170 140.445 200.445 110 238 110H642L854 322V846C854 883.555 823.555 914 786 914H238C200.445 914 170 883.555 170 846V178Z"
+        stroke="#C8D5E8"
+        stroke-width="10"
+        stroke-linejoin="round"/>
+  <path d="M642 110V282C642 304.091 659.909 322 682 322H854"
+        stroke="#C8D5E8"
+        stroke-width="10"
+        stroke-linejoin="round"/>
 </svg>
