@@ -126,7 +126,7 @@
                             ToolTip="{DynamicResource ReloadTooltip}"
                             Command="{Binding ReloadCommand}">
                         <Path Style="{StaticResource ToolbarPathStyle}"
-                              Data="M14,5 L14,2 L11,2 M13.7,2.3 A6.3,6.3 0 0 0 3.1,4.5 M2,11 L2,14 L5,14 M2.3,13.7 A6.3,6.3 0 0 0 12.9,11.5" />
+                              Data="M3,6 C5,2 11,2 14,6 M11.5,3.5 L14,6 L11.5,8.5 M13,10 C11,14 5,14 2,10 M4.5,7.5 L2,10 L4.5,12.5" />
                     </Button>
                     <Button Style="{StaticResource ToolbarButtonStyle}"
                             Content="{Binding ModeLabel}"
