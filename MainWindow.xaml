@@ -88,7 +88,7 @@
                             ToolTip="{DynamicResource ReloadTooltip}"
                             Command="{Binding ReloadCommand}">
                         <Path Style="{StaticResource ToolbarPathStyle}"
-                              Data="M13.5,5.5 L13.5,2 L10,2 M13.2,2.4 C11.9,1.2 10.1,0.8 8.3,1.1 C5.1,1.6 2.8,4.4 2.8,7.6 C2.8,11.3 5.8,14.2 9.4,14.2 C11.8,14.2 13.9,13 15,11.1" />
+                              Data="M14,5 L14,2 L11,2 M13.7,2.3 A6.3,6.3 0 0 0 3.1,4.5 M2,11 L2,14 L5,14 M2.3,13.7 A6.3,6.3 0 0 0 12.9,11.5" />
                     </Button>
                     <Button Style="{StaticResource ToolbarButtonStyle}"
                             Content="{Binding ModeLabel}"
@@ -120,11 +120,8 @@
                     <Button Style="{StaticResource ToolbarIconButtonStyle}"
                             ToolTip="{DynamicResource SettingsTooltip}"
                             Click="Settings_Click">
-                        <Path Width="14"
-                              Height="14"
-                              Stretch="Uniform"
-                              Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
-                              Data="M9.6,1.2 L10.1,3.1 C10.5,3.3 10.8,3.5 11.1,3.8 L13,3.3 L14.2,5.4 L12.8,6.8 C12.9,7.2 12.9,7.6 12.8,8 L14.2,9.6 L13,11.7 L11.1,11.2 C10.8,11.5 10.5,11.7 10.1,11.9 L9.6,13.8 L7.2,13.8 L6.7,11.9 C6.3,11.7 6,11.5 5.7,11.2 L3.8,11.7 L2.6,9.6 L4,8 C3.9,7.6 3.9,7.2 4,6.8 L2.6,5.4 L3.8,3.3 L5.7,3.8 C6,3.5 6.3,3.3 6.7,3.1 L7.2,1.2 Z M8.4,5.3 A2.1,2.1 0 1 0 8.4,9.5 A2.1,2.1 0 0 0 8.4,5.3 Z" />
+                        <Path Style="{StaticResource ToolbarPathStyle}"
+                              Data="M2,4 L5,4 M9,4 L14,4 M7,2 L7,6 M2,8 L9,8 M13,8 L14,8 M11,6 L11,10 M2,12 L4,12 M8,12 L14,12 M6,10 L6,14" />
                     </Button>
                 </StackPanel>
 
@@ -219,7 +216,8 @@
 
             <Border Grid.Column="2"
                     Style="{StaticResource DocumentHostStyle}">
-                <Grid>
+                <Grid Tag="21"
+                      SizeChanged="RoundedContent_SizeChanged">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -443,7 +441,7 @@
                           Height="28"
                           Stretch="Uniform"
                           Stroke="White"
-                          StrokeThickness="1.8"
+                          StrokeThickness="1.35"
                           StrokeStartLineCap="Round"
                           StrokeEndLineCap="Round"
                           StrokeLineJoin="Round"

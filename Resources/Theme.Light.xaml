@@ -11,8 +11,8 @@
     <SolidColorBrush x:Key="PanelBrush" Color="#CCFFFFFF" />
     <SolidColorBrush x:Key="DocumentBrush" Color="#F8FFFFFF" />
     <SolidColorBrush x:Key="EmptyStateBrush" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="HoverBrush" Color="#E8EEF7" />
-    <SolidColorBrush x:Key="PressedBrush" Color="#DCE6F5" />
+    <SolidColorBrush x:Key="HoverBrush" Color="#DCE5F1" />
+    <SolidColorBrush x:Key="PressedBrush" Color="#CAD8E9" />
     <SolidColorBrush x:Key="HairlineBrush" Color="#1F0B1220" />
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="#111827" />
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="#374151" />

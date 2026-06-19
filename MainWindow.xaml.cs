@@ -223,6 +223,20 @@ public partial class MainWindow : Window
         _dwmBackdropService.ApplyRoundedCorners(this, rounded);
     }
 
+    private void RoundedContent_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (sender is not FrameworkElement element
+            || element.Tag is not string radiusText
+            || !double.TryParse(radiusText, out var radius)
+            || e.NewSize.Width <= 0
+            || e.NewSize.Height <= 0)
+        {
+            return;
+        }
+
+        element.Clip = new RectangleGeometry(new Rect(e.NewSize), radius, radius);
+    }
+
     private ScrollViewer? GetDocumentScrollViewer()
     {
         _documentScrollViewer ??= FindVisualChild<ScrollViewer>(DocumentViewer);

@@ -107,7 +107,7 @@
         <Setter Property="Height" Value="15" />
         <Setter Property="Stretch" Value="Uniform" />
         <Setter Property="Stroke" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
-        <Setter Property="StrokeThickness" Value="1.6" />
+        <Setter Property="StrokeThickness" Value="1.25" />
         <Setter Property="StrokeStartLineCap" Value="Round" />
         <Setter Property="StrokeEndLineCap" Value="Round" />
         <Setter Property="StrokeLineJoin" Value="Round" />
@@ -164,7 +164,7 @@
         <Setter Property="Height" Value="14" />
         <Setter Property="Stretch" Value="Uniform" />
         <Setter Property="Stroke" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
-        <Setter Property="StrokeThickness" Value="1.7" />
+        <Setter Property="StrokeThickness" Value="1.25" />
         <Setter Property="StrokeStartLineCap" Value="Round" />
         <Setter Property="StrokeEndLineCap" Value="Round" />
         <Setter Property="StrokeLineJoin" Value="Round" />
@@ -173,6 +173,7 @@
 
     <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
         <Setter Property="Foreground" Value="#D92D20" />
+        <Setter Property="Margin" Value="3,7,7,7" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -351,7 +352,7 @@
                                                   Height="5"
                                                   Stretch="Fill"
                                                   Stroke="{DynamicResource TextMutedBrush}"
-                                                  StrokeThickness="1.5"
+                                                  StrokeThickness="1.25"
                                                   StrokeStartLineCap="Round"
                                                   StrokeEndLineCap="Round"
                                                   Data="M0,0 L4,4 L8,0" />
@@ -442,7 +443,7 @@
                                   Height="8"
                                   Stretch="Fill"
                                   Stroke="White"
-                                  StrokeThickness="1.8"
+                                  StrokeThickness="1.35"
                                   StrokeStartLineCap="Round"
                                   StrokeEndLineCap="Round"
                                   StrokeLineJoin="Round"
