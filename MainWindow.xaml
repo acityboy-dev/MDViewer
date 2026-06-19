@@ -78,8 +78,20 @@
                     <Button Style="{StaticResource ToolbarIconButtonStyle}"
                             ToolTip="{DynamicResource ToggleLibraryTooltip}"
                             Command="{Binding ToggleSidebarCommand}">
-                        <Path Style="{StaticResource ToolbarPathStyle}"
-                              Data="M2,3.5 L14,3.5 M2,8 L14,8 M2,12.5 L14,12.5" />
+                        <Grid Width="14"
+                              Height="11"
+                              SnapsToDevicePixels="True"
+                              UseLayoutRounding="True">
+                            <Border Height="1"
+                                    VerticalAlignment="Top"
+                                    Background="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                            <Border Height="1"
+                                    VerticalAlignment="Center"
+                                    Background="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                            <Border Height="1"
+                                    VerticalAlignment="Bottom"
+                                    Background="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                        </Grid>
                     </Button>
                     <Button Style="{StaticResource ToolbarButtonStyle}"
                             Content="{DynamicResource Open}"
