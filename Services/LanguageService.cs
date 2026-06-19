@@ -28,7 +28,14 @@ public sealed class LanguageService
     public void ApplyLanguage(AppLanguage language, bool save = true)
     {
         CurrentLanguage = language;
-        var culture = CultureInfo.GetCultureInfo(language == AppLanguage.Korean ? "ko-KR" : "en-US");
+        var cultureName = language switch
+        {
+            AppLanguage.Korean => "ko-KR",
+            AppLanguage.English => "en-US",
+            AppLanguage.Japanese => "ja-JP",
+            _ => "ko-KR"
+        };
+        var culture = CultureInfo.GetCultureInfo(cultureName);
         CultureInfo.DefaultThreadCurrentCulture = culture;
         CultureInfo.DefaultThreadCurrentUICulture = culture;
         Thread.CurrentThread.CurrentCulture = culture;
@@ -43,7 +50,13 @@ public sealed class LanguageService
             dictionaries.Remove(existing);
         }
 
-        var suffix = language == AppLanguage.Korean ? "Ko" : "En";
+        var suffix = language switch
+        {
+            AppLanguage.Korean => "Ko",
+            AppLanguage.English => "En",
+            AppLanguage.Japanese => "Ja",
+            _ => "Ko"
+        };
         dictionaries.Insert(index, new ResourceDictionary
         {
             Source = new Uri($"Resources/Strings.{suffix}.xaml", UriKind.Relative)

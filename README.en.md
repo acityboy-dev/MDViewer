@@ -15,7 +15,7 @@ MarkFlow is a Markdown viewer and editor built with .NET 9 and WPF for Windows 1
 - Raw Markdown and split editor/preview modes
 - Clear indicators for unsaved changes
 - Light, Dark, and System themes
-- Korean and English application UI with a saved language preference
+- Korean, English, and Japanese application UI with a saved language preference
 - Typography presets and cached Korean Google Fonts
 - Windows legacy acrylic blur backdrop
 - Custom title bar, rounded window corners, and caption controls
@@ -96,7 +96,7 @@ Applies Light, Dark, or System themes and provides typography values. Themes are
 
 ### LanguageService
 
-Switches the Korean and English string resource dictionaries at runtime and applies the matching culture. The selected language is stored in `%APPDATA%\MarkFlow\settings.json` and restored on the next launch.
+Switches the Korean, English, and Japanese string resource dictionaries at runtime and applies the matching culture. The selected language is stored in `%APPDATA%\MarkFlow\settings.json` and restored on the next launch.
 
 ### DwmBackdropService
 

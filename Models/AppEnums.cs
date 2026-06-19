@@ -23,5 +23,6 @@ public enum EditorMode
 public enum AppLanguage
 {
     Korean,
-    English
+    English,
+    Japanese
 }

@@ -683,7 +683,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         ReplaceOptions(LanguageOptions,
         [
             new(AppLanguage.Korean, Localize("LanguageKorean")),
-            new(AppLanguage.English, Localize("LanguageEnglish"))
+            new(AppLanguage.English, Localize("LanguageEnglish")),
+            new(AppLanguage.Japanese, Localize("LanguageJapanese"))
         ]);
     }
 

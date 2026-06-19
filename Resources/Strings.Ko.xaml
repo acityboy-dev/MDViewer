@@ -32,6 +32,7 @@
     <system:String x:Key="WatchFile">파일 변경 감지</system:String>
     <system:String x:Key="LanguageKorean">한국어</system:String>
     <system:String x:Key="LanguageEnglish">English</system:String>
+    <system:String x:Key="LanguageJapanese">日本語</system:String>
     <system:String x:Key="ThemeLight">라이트</system:String>
     <system:String x:Key="ThemeDark">다크</system:String>
     <system:String x:Key="ThemeSystem">시스템</system:String>
