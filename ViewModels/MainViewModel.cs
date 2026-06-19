@@ -44,6 +44,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private bool _isDirty;
     private bool _isLoadingDocument;
     private bool _isFileWatchingEnabled = true;
+    private int _zoomPercent = 100;
     private ThemeMode _selectedThemeMode = ThemeMode.Light;
     private TypographyPreset _selectedTypographyPreset = TypographyPreset.Comfortable;
     private EditorMode _selectedEditorMode = EditorMode.Markdown;
@@ -79,11 +80,13 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         _selectedTypographyPreset = settings.Typography;
         _selectedEditorMode = settings.EditorMode;
         _isFileWatchingEnabled = settings.IsFileWatchingEnabled;
+        _zoomPercent = NormalizeZoom(settings.ZoomPercent);
         _selectedDocumentFontOption = DocumentFontOptions.FirstOrDefault(option => option.Id == settings.DocumentFontId)
             ?? DocumentFontOptions.First(option => option.Id == "system");
 
         _themeService.ApplyTheme(_selectedThemeMode);
         _themeService.ApplyTypography(_selectedTypographyPreset);
+        _themeService.ApplyZoom(_zoomPercent);
 
         OpenFileCommand = new AsyncRelayCommand(OpenFileWithDialogAsync);
         ReloadCommand = new AsyncRelayCommand(ReloadAsync, () => HasDocument);
@@ -92,6 +95,9 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         ToggleSidebarCommand = new RelayCommand(ToggleSidebar);
         ToggleCompactCommand = new RelayCommand(ToggleCompactMode);
         ToggleThemeCommand = new RelayCommand(ToggleTheme);
+        ZoomInCommand = new RelayCommand(ZoomIn, () => ZoomPercent < 200);
+        ZoomOutCommand = new RelayCommand(ZoomOut, () => ZoomPercent > 50);
+        ResetZoomCommand = new RelayCommand(ResetZoom, () => ZoomPercent != 100);
 
         _editorPreviewTimer = new DispatcherTimer
         {
@@ -175,6 +181,9 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public RelayCommand ToggleSidebarCommand { get; }
     public RelayCommand ToggleCompactCommand { get; }
     public RelayCommand ToggleThemeCommand { get; }
+    public RelayCommand ZoomInCommand { get; }
+    public RelayCommand ZoomOutCommand { get; }
+    public RelayCommand ResetZoomCommand { get; }
 
     public string CurrentFilePath
     {
@@ -326,6 +335,23 @@ public sealed class MainViewModel : ObservableObject, IDisposable
             }
         }
     }
+
+    public int ZoomPercent
+    {
+        get => _zoomPercent;
+        private set
+        {
+            if (SetProperty(ref _zoomPercent, value))
+            {
+                OnPropertyChanged(nameof(ZoomLabel));
+                ZoomInCommand.RaiseCanExecuteChanged();
+                ZoomOutCommand.RaiseCanExecuteChanged();
+                ResetZoomCommand.RaiseCanExecuteChanged();
+            }
+        }
+    }
+
+    public string ZoomLabel => $"{ZoomPercent}%";
 
     public ThemeMode SelectedThemeMode
     {
@@ -623,6 +649,36 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private void ToggleTheme()
     {
         SelectedThemeMode = SelectedThemeMode == ThemeMode.Dark ? ThemeMode.Light : ThemeMode.Dark;
+    }
+
+    private void ZoomIn() => SetZoom(ZoomPercent + 10);
+
+    private void ZoomOut() => SetZoom(ZoomPercent - 10);
+
+    private void ResetZoom() => SetZoom(100);
+
+    private void SetZoom(int zoomPercent)
+    {
+        var normalized = NormalizeZoom(zoomPercent);
+        if (normalized == ZoomPercent)
+        {
+            return;
+        }
+
+        ZoomPercent = normalized;
+        _themeService.ApplyZoom(normalized);
+        _appSettingsService.Update(settings => settings.ZoomPercent = normalized);
+        _ = ReloadAsync();
+    }
+
+    private static int NormalizeZoom(int zoomPercent)
+    {
+        if (zoomPercent <= 0)
+        {
+            return 100;
+        }
+
+        return Math.Clamp((int)Math.Round(zoomPercent / 10d) * 10, 50, 200);
     }
 
     private void ToggleEdit()

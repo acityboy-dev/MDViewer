@@ -1,6 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    <FontFamily x:Key="AppFontFamily">Malgun Gothic, Segoe UI</FontFamily>
     <system:String x:Key="SettingsWindowTitle">MarkFlow 설정</system:String>
     <system:String x:Key="SettingsTitle">설정</system:String>
     <system:String x:Key="Open">열기</system:String>
@@ -12,6 +13,9 @@
     <system:String x:Key="SettingsTooltip">설정</system:String>
     <system:String x:Key="EnterCompactModeTooltip">풀 컴팩트 모드</system:String>
     <system:String x:Key="ExitCompactModeTooltip">컴팩트 모드 종료</system:String>
+    <system:String x:Key="ZoomOutTooltip">축소 (Ctrl+-)</system:String>
+    <system:String x:Key="ZoomResetTooltip">배율 초기화 (Ctrl+0)</system:String>
+    <system:String x:Key="ZoomInTooltip">확대 (Ctrl++)</system:String>
     <system:String x:Key="LibraryTitle">라이브러리</system:String>
     <system:String x:Key="LibrarySubtitle">최근 Markdown 파일</system:String>
     <system:String x:Key="FilesTab">파일</system:String>

@@ -121,6 +121,21 @@ public partial class MainWindow : Window
         }
     }
 
+    private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if ((Keyboard.Modifiers & ModifierKeys.Control) == 0 || e.Delta == 0)
+        {
+            return;
+        }
+
+        var command = e.Delta > 0 ? _viewModel.ZoomInCommand : _viewModel.ZoomOutCommand;
+        if (command.CanExecute(null))
+        {
+            command.Execute(null);
+        }
+        e.Handled = true;
+    }
+
     private void DocumentViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
     {
         if (GetDocumentScrollViewer() is not { } scrollViewer)

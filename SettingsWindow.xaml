@@ -9,6 +9,7 @@
         MinHeight="480"
         Background="Transparent"
         Foreground="{DynamicResource TextPrimaryBrush}"
+        FontFamily="{DynamicResource AppFontFamily}"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Icon="pack://application:,,,/Assets/MarkFlow-64.png">

@@ -1,6 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    <FontFamily x:Key="AppFontFamily">Yu Gothic UI, Meiryo UI, Meiryo, Segoe UI</FontFamily>
     <system:String x:Key="SettingsWindowTitle">MarkFlow 設定</system:String>
     <system:String x:Key="SettingsTitle">設定</system:String>
     <system:String x:Key="Open">開く</system:String>
@@ -12,6 +13,9 @@
     <system:String x:Key="SettingsTooltip">設定</system:String>
     <system:String x:Key="EnterCompactModeTooltip">フルコンパクトモード</system:String>
     <system:String x:Key="ExitCompactModeTooltip">コンパクトモードを終了</system:String>
+    <system:String x:Key="ZoomOutTooltip">縮小 (Ctrl+-)</system:String>
+    <system:String x:Key="ZoomResetTooltip">倍率をリセット (Ctrl+0)</system:String>
+    <system:String x:Key="ZoomInTooltip">拡大 (Ctrl++)</system:String>
     <system:String x:Key="LibraryTitle">ライブラリ</system:String>
     <system:String x:Key="LibrarySubtitle">最近使った Markdown ファイル</system:String>
     <system:String x:Key="FilesTab">ファイル</system:String>

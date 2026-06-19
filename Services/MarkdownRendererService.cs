@@ -39,7 +39,7 @@ public sealed partial class MarkdownRendererService
     public async Task<RenderedMarkdownDocument> RenderFileAsync(string path)
     {
         var info = new FileInfo(path);
-        var key = $"{path}|{info.LastWriteTimeUtc.Ticks}|{info.Length}|{_themeService.CurrentTypography}|{_themeService.CurrentTheme}|{_themeService.CurrentDocumentFontFamily.Source}";
+        var key = $"{path}|{info.LastWriteTimeUtc.Ticks}|{info.Length}|{_themeService.CurrentTypography}|{_themeService.CurrentTheme}|{_themeService.CurrentDocumentFontFamily.Source}|{_themeService.ZoomPercent}";
         if (_cache.TryGetValue(key, out var cached))
         {
             return cached;
@@ -119,11 +119,11 @@ public sealed partial class MarkdownRendererService
         paragraph.LineHeight = double.NaN;
         paragraph.FontSize = heading.Level switch
         {
-            1 => 34,
-            2 => 26,
-            3 => 21,
-            4 => 18,
-            _ => 16
+            1 => _themeService.Scale(34),
+            2 => _themeService.Scale(26),
+            3 => _themeService.Scale(21),
+            4 => _themeService.Scale(18),
+            _ => _themeService.Scale(16)
         };
         return paragraph;
     }
@@ -171,15 +171,15 @@ public sealed partial class MarkdownRendererService
             Padding = new Thickness(14),
             Background = _themeService.GetBrush("CodeBackgroundBrush"),
             FontFamily = new System.Windows.Media.FontFamily("Cascadia Mono, Consolas"),
-            FontSize = Math.Max(12.5, _themeService.BodyFontSize - 1),
-            LineHeight = 22
+            FontSize = _themeService.CodeFontSize,
+            LineHeight = _themeService.Scale(22)
         };
 
         if (!string.IsNullOrWhiteSpace(language))
         {
             paragraph.Inlines.Add(new Run(language.Trim())
             {
-                FontSize = 11,
+                FontSize = _themeService.Scale(11),
                 FontWeight = FontWeights.SemiBold,
                 Foreground = _themeService.GetBrush("TextMutedBrush")
             });
@@ -296,7 +296,7 @@ public sealed partial class MarkdownRendererService
                 {
                     FontFamily = new System.Windows.Media.FontFamily("Cascadia Mono, Consolas"),
                     Background = _themeService.GetBrush("CodeBackgroundBrush"),
-                    FontSize = Math.Max(12.5, _themeService.BodyFontSize - 1)
+                    FontSize = _themeService.CodeFontSize
                 });
                 break;
             case EmphasisInline emphasis:

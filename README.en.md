@@ -13,6 +13,7 @@ MarkFlow is a Markdown viewer and editor built with .NET 9 and WPF for Windows 1
 - Collapsible Library and Outline sidebar
 - Full compact viewing mode that hides the sidebar and document header and resizes down to `360×240` (`Ctrl+Shift+F`)
 - Markdown editor with an unsaved live preview
+- `50%–200%` document zoom with browser-style shortcuts (`Ctrl++`, `Ctrl+-`, `Ctrl+0`, `Ctrl+wheel`)
 - Raw Markdown and split editor/preview modes
 - Clear indicators for unsaved changes
 - Light, Dark, and System themes
@@ -101,7 +102,7 @@ Switches the Korean, English, and Japanese string resource dictionaries at runti
 
 ### AppSettingsService
 
-Stores the theme, typography, document font, editor mode, file watching preference, and language in `%APPDATA%\MarkFlow\settings.json`. Settings are written through a temporary file and restored on the next launch.
+Stores the theme, typography, document font, document zoom, editor mode, file watching preference, and language in `%APPDATA%\MarkFlow\settings.json`. Settings are written through a temporary file and restored on the next launch.
 
 ### DwmBackdropService
 

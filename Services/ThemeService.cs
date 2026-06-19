@@ -11,6 +11,7 @@ public sealed class ThemeService
     public bool IsDarkTheme { get; private set; }
     public TypographyPreset CurrentTypography { get; private set; } = TypographyPreset.Comfortable;
     public FontFamily CurrentDocumentFontFamily { get; private set; } = new("Malgun Gothic, Segoe UI");
+    public int ZoomPercent { get; private set; } = 100;
 
     public void ApplyTheme(ThemeMode themeMode)
     {
@@ -42,24 +43,38 @@ public sealed class ThemeService
         CurrentDocumentFontFamily = fontFamily;
     }
 
+    public void ApplyZoom(int zoomPercent)
+    {
+        ZoomPercent = Math.Clamp(zoomPercent, 50, 200);
+    }
+
     public Brush GetBrush(string key)
     {
         return Application.Current.TryFindResource(key) as Brush ?? Brushes.Transparent;
     }
 
-    public double BodyFontSize => CurrentTypography switch
-    {
-        TypographyPreset.Compact => 14,
-        TypographyPreset.Editorial => 17,
-        _ => 15.5
-    };
+    public double BodyFontSize => Scale(CurrentTypography switch
+        {
+            TypographyPreset.Compact => 14,
+            TypographyPreset.Editorial => 17,
+            _ => 15.5
+        });
 
-    public double DocumentLineHeight => CurrentTypography switch
+    public double DocumentLineHeight => Scale(CurrentTypography switch
+        {
+            TypographyPreset.Compact => 22,
+            TypographyPreset.Editorial => 30,
+            _ => 26
+        });
+
+    public double CodeFontSize => Scale(CurrentTypography switch
     {
-        TypographyPreset.Compact => 22,
-        TypographyPreset.Editorial => 30,
-        _ => 26
-    };
+        TypographyPreset.Compact => 13,
+        TypographyPreset.Editorial => 16,
+        _ => 14.5
+    });
+
+    public double Scale(double value) => value * ZoomPercent / 100d;
 
     private static ThemeMode GetSystemTheme()
     {

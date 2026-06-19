@@ -1,6 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    <FontFamily x:Key="AppFontFamily">Segoe UI</FontFamily>
     <system:String x:Key="SettingsWindowTitle">MarkFlow Settings</system:String>
     <system:String x:Key="SettingsTitle">Settings</system:String>
     <system:String x:Key="Open">Open</system:String>
@@ -12,6 +13,9 @@
     <system:String x:Key="SettingsTooltip">Settings</system:String>
     <system:String x:Key="EnterCompactModeTooltip">Full compact mode</system:String>
     <system:String x:Key="ExitCompactModeTooltip">Exit compact mode</system:String>
+    <system:String x:Key="ZoomOutTooltip">Zoom out (Ctrl+-)</system:String>
+    <system:String x:Key="ZoomResetTooltip">Reset zoom (Ctrl+0)</system:String>
+    <system:String x:Key="ZoomInTooltip">Zoom in (Ctrl++)</system:String>
     <system:String x:Key="LibraryTitle">Library</system:String>
     <system:String x:Key="LibrarySubtitle">Recent Markdown files</system:String>
     <system:String x:Key="FilesTab">Files</system:String>

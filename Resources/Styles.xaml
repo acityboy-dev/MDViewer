@@ -20,6 +20,22 @@
         <Setter Property="Background" Value="{DynamicResource DocumentBrush}" />
         <Setter Property="CornerRadius" Value="22" />
         <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="Effect" Value="{x:Null}" />
+    </Style>
+
+    <Style x:Key="DocumentShadowStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource DocumentBrush}" />
+        <Setter Property="CornerRadius" Value="22" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="22"
+                                  ShadowDepth="4"
+                                  Direction="270"
+                                  Color="#22000000"
+                                  Opacity="0.28" />
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="PanelTitleStyle" TargetType="TextBlock">
@@ -109,6 +125,44 @@
         <Setter Property="Fill" Value="Transparent" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>
+
+    <Style x:Key="ZoomButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+        <Setter Property="Width" Value="26" />
+        <Setter Property="MinWidth" Value="26" />
+        <Setter Property="Height" Value="26" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="FontSize" Value="15" />
+    </Style>
+
+    <Style x:Key="ZoomValueButtonStyle" TargetType="Button" BasedOn="{StaticResource ZoomButtonStyle}">
+        <Setter Property="Width" Value="48" />
+        <Setter Property="MinWidth" Value="48" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <DataTemplate x:Key="ZoomControlTemplate">
+        <Border Margin="4,0"
+                Padding="2"
+                Background="{DynamicResource EmptyStateBrush}"
+                CornerRadius="8">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="−"
+                        Style="{StaticResource ZoomButtonStyle}"
+                        ToolTip="{DynamicResource ZoomOutTooltip}"
+                        Command="{Binding ZoomOutCommand}" />
+                <Button Content="{Binding ZoomLabel}"
+                        Style="{StaticResource ZoomValueButtonStyle}"
+                        ToolTip="{DynamicResource ZoomResetTooltip}"
+                        Command="{Binding ResetZoomCommand}" />
+                <Button Content="+"
+                        Style="{StaticResource ZoomButtonStyle}"
+                        ToolTip="{DynamicResource ZoomInTooltip}"
+                        Command="{Binding ZoomInCommand}" />
+            </StackPanel>
+        </Border>
+    </DataTemplate>
 
     <Style x:Key="MarkdownToolButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
         <Setter Property="MinWidth" Value="36" />

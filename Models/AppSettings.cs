@@ -8,4 +8,5 @@ public sealed class AppSettings
     public EditorMode EditorMode { get; set; } = EditorMode.Markdown;
     public string DocumentFontId { get; set; } = "system";
     public bool IsFileWatchingEnabled { get; set; } = true;
+    public int ZoomPercent { get; set; } = 100;
 }
