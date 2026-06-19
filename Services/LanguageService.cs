@@ -1,6 +1,4 @@
 using System.Globalization;
-using System.IO;
-using System.Text.Json;
 using System.Windows;
 using MDViewer.Models;
 
@@ -8,21 +6,18 @@ namespace MDViewer.Services;
 
 public sealed class LanguageService
 {
-    private readonly string _settingsPath;
+    private readonly AppSettingsService _settingsService;
 
-    public LanguageService()
+    public LanguageService(AppSettingsService settingsService)
     {
-        var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var folder = Path.Combine(appData, "MarkFlow");
-        Directory.CreateDirectory(folder);
-        _settingsPath = Path.Combine(folder, "settings.json");
+        _settingsService = settingsService;
     }
 
     public AppLanguage CurrentLanguage { get; private set; } = AppLanguage.Korean;
 
     public void Initialize()
     {
-        ApplyLanguage(LoadLanguage(), save: false);
+        ApplyLanguage(_settingsService.Current.Language, save: false);
     }
 
     public void ApplyLanguage(AppLanguage language, bool save = true)
@@ -64,7 +59,7 @@ public sealed class LanguageService
 
         if (save)
         {
-            SaveLanguage(language);
+            _settingsService.Update(settings => settings.Language = language);
         }
     }
 
@@ -73,37 +68,4 @@ public sealed class LanguageService
         return Application.Current.TryFindResource(key) as string ?? key;
     }
 
-    private AppLanguage LoadLanguage()
-    {
-        try
-        {
-            if (!File.Exists(_settingsPath))
-            {
-                return AppLanguage.Korean;
-            }
-
-            var settings = JsonSerializer.Deserialize<LanguageSettings>(File.ReadAllText(_settingsPath));
-            return Enum.TryParse<AppLanguage>(settings?.Language, out var language)
-                ? language
-                : AppLanguage.Korean;
-        }
-        catch
-        {
-            return AppLanguage.Korean;
-        }
-    }
-
-    private void SaveLanguage(AppLanguage language)
-    {
-        var settings = new LanguageSettings { Language = language.ToString() };
-        File.WriteAllText(_settingsPath, JsonSerializer.Serialize(settings, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        }));
-    }
-
-    private sealed class LanguageSettings
-    {
-        public string Language { get; set; } = AppLanguage.Korean.ToString();
-    }
 }

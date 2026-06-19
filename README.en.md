@@ -99,6 +99,10 @@ Applies Light, Dark, or System themes and provides typography values. Themes are
 
 Switches the Korean, English, and Japanese string resource dictionaries at runtime and applies the matching culture. The selected language is stored in `%APPDATA%\MarkFlow\settings.json` and restored on the next launch.
 
+### AppSettingsService
+
+Stores the theme, typography, document font, editor mode, file watching preference, and language in `%APPDATA%\MarkFlow\settings.json`. Settings are written through a temporary file and restored on the next launch.
+
 ### DwmBackdropService
 
 Manages the window backdrop and caption appearance. MarkFlow currently prioritizes the Windows 10 legacy acrylic blur implementation instead of Mica.

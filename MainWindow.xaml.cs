@@ -43,7 +43,8 @@ public partial class MainWindow : Window
             fileWatcherService,
             tweenService,
             _dwmBackdropService,
-            App.LanguageService);
+            App.LanguageService,
+            App.SettingsService);
 
         DataContext = _viewModel;
         Loaded += OnLoaded;
@@ -57,7 +58,7 @@ public partial class MainWindow : Window
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        _dwmBackdropService.Apply(this);
+        _dwmBackdropService.Apply(this, _viewModel.IsDarkTheme);
         _viewModel.AttachWindow(this);
         UpdateWindowShape();
     }

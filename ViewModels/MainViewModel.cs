@@ -21,6 +21,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private readonly TweenService _tweenService;
     private readonly DwmBackdropService _dwmBackdropService;
     private readonly LanguageService _languageService;
+    private readonly AppSettingsService _appSettingsService;
     private readonly DispatcherTimer _editorPreviewTimer;
     private Window? _window;
     private string _currentFilePath = string.Empty;
@@ -59,7 +60,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         FileWatcherService fileWatcherService,
         TweenService tweenService,
         DwmBackdropService dwmBackdropService,
-        LanguageService languageService)
+        LanguageService languageService,
+        AppSettingsService appSettingsService)
     {
         _rendererService = rendererService;
         _themeService = themeService;
@@ -69,7 +71,19 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         _tweenService = tweenService;
         _dwmBackdropService = dwmBackdropService;
         _languageService = languageService;
+        _appSettingsService = appSettingsService;
+
+        var settings = appSettingsService.Current;
         _selectedLanguage = languageService.CurrentLanguage;
+        _selectedThemeMode = settings.Theme;
+        _selectedTypographyPreset = settings.Typography;
+        _selectedEditorMode = settings.EditorMode;
+        _isFileWatchingEnabled = settings.IsFileWatchingEnabled;
+        _selectedDocumentFontOption = DocumentFontOptions.FirstOrDefault(option => option.Id == settings.DocumentFontId)
+            ?? DocumentFontOptions.First(option => option.Id == "system");
+
+        _themeService.ApplyTheme(_selectedThemeMode);
+        _themeService.ApplyTypography(_selectedTypographyPreset);
 
         OpenFileCommand = new AsyncRelayCommand(OpenFileWithDialogAsync);
         ReloadCommand = new AsyncRelayCommand(ReloadAsync, () => HasDocument);
@@ -307,6 +321,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         {
             if (SetProperty(ref _isFileWatchingEnabled, value))
             {
+                _appSettingsService.Update(settings => settings.IsFileWatchingEnabled = value);
                 UpdateWatcher();
             }
         }
@@ -319,6 +334,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         {
             if (SetProperty(ref _selectedThemeMode, value))
             {
+                _appSettingsService.Update(settings => settings.Theme = value);
                 _themeService.ApplyTheme(value);
                 if (_window is not null)
                 {
@@ -338,6 +354,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         {
             if (SetProperty(ref _selectedTypographyPreset, value))
             {
+                _appSettingsService.Update(settings => settings.Typography = value);
                 _themeService.ApplyTypography(value);
                 _ = ReloadAsync();
             }
@@ -351,6 +368,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         {
             if (SetProperty(ref _selectedDocumentFontOption, value) && value is not null)
             {
+                _appSettingsService.Update(settings => settings.DocumentFontId = value.Id);
                 _ = ApplyDocumentFontAsync(value);
             }
         }
@@ -363,6 +381,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         {
             if (SetProperty(ref _selectedEditorMode, value))
             {
+                _appSettingsService.Update(settings => settings.EditorMode = value);
                 UpdateEditorPreviewLayout();
                 ScheduleEditorPreviewRender();
             }
@@ -405,7 +424,10 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     {
         _window = window;
         _dwmBackdropService.ApplyDarkCaption(window, _themeService.IsDarkTheme);
-        SelectedDocumentFontOption ??= DocumentFontOptions.FirstOrDefault(option => option.Id == "system");
+        if (_selectedDocumentFontOption is not null)
+        {
+            _ = ApplyDocumentFontAsync(_selectedDocumentFontOption);
+        }
     }
 
     public async Task OpenDroppedFileAsync(IEnumerable<string> files)

@@ -5,7 +5,8 @@ namespace MDViewer;
 
 public partial class App : Application
 {
-    public static LanguageService LanguageService { get; } = new();
+    public static AppSettingsService SettingsService { get; } = new();
+    public static LanguageService LanguageService { get; } = new(SettingsService);
 
     protected override void OnStartup(StartupEventArgs e)
     {
