@@ -11,7 +11,7 @@ MarkFlow is a Markdown viewer and editor built with .NET 9 and WPF for Windows 1
 - Open Markdown files, revisit recent files, or drop files anywhere on the window
 - Render headings, paragraphs, code blocks, inline code, tables, quotes, task lists, images, links, and horizontal rules
 - Collapsible Library and Outline sidebar
-- Full compact viewing mode that hides the sidebar and document header (`Ctrl+Shift+F`)
+- Full compact viewing mode that hides the sidebar and document header and resizes down to `360×240` (`Ctrl+Shift+F`)
 - Markdown editor with an unsaved live preview
 - Raw Markdown and split editor/preview modes
 - Clear indicators for unsaved changes

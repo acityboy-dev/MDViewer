@@ -6,6 +6,7 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Animation;
 using System.Windows.Input;
 using System.Windows.Shell;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using MDViewer.Models;
@@ -47,9 +48,14 @@ public partial class MainWindow : Window
             App.SettingsService);
 
         DataContext = _viewModel;
+        _viewModel.PropertyChanged += ViewModel_PropertyChanged;
         Loaded += OnLoaded;
         StateChanged += OnStateChanged;
-        Closed += (_, _) => _viewModel.Dispose();
+        Closed += (_, _) =>
+        {
+            _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            _viewModel.Dispose();
+        };
         AddHandler(DragDrop.PreviewDragEnterEvent, new DragEventHandler(Root_DragEnter), true);
         AddHandler(DragDrop.PreviewDragOverEvent, new DragEventHandler(Root_DragOver), true);
         AddHandler(DragDrop.PreviewDragLeaveEvent, new DragEventHandler(Root_DragLeave), true);
@@ -66,6 +72,14 @@ public partial class MainWindow : Window
     private void OnStateChanged(object? sender, EventArgs e)
     {
         UpdateWindowShape();
+    }
+
+    private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainViewModel.IsCompactMode))
+        {
+            UpdateWindowShape();
+        }
     }
 
     private void Root_DragEnter(object sender, DragEventArgs e)
@@ -220,12 +234,18 @@ public partial class MainWindow : Window
     private void UpdateWindowShape()
     {
         var rounded = WindowState != WindowState.Maximized;
+        var compact = _viewModel.IsCompactMode;
+        var baseTitleBarHeight = compact ? 36 : 44;
+        var titleBarHeight = rounded ? baseTitleBarHeight : baseTitleBarHeight + 8;
+
         WindowFrame.CornerRadius = rounded ? new CornerRadius(18) : new CornerRadius(0);
-        TitleBarRow.Height = new GridLength(rounded ? 44 : 52);
+        TitleBarRow.Height = new GridLength(titleBarHeight);
         TitleBarSurface.Padding = rounded ? new Thickness(0) : new Thickness(8, 8, 8, 0);
+        MinWidth = compact ? 360 : 980;
+        MinHeight = compact ? 240 : 640;
         if (WindowChrome.GetWindowChrome(this) is { } chrome)
         {
-            chrome.CaptionHeight = rounded ? 44 : 52;
+            chrome.CaptionHeight = titleBarHeight;
         }
         _dwmBackdropService.ApplyRoundedCorners(this, rounded);
     }

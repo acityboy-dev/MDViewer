@@ -152,6 +152,13 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsCompactMode}" Value="True">
+                <Setter Property="Width" Value="32" />
+                <Setter Property="Height" Value="26" />
+                <Setter Property="Margin" Value="2,4" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="CaptionPathStyle" TargetType="Path">
@@ -186,6 +193,11 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsCompactMode}" Value="True">
+                <Setter Property="Margin" Value="2,4,4,4" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="QuietListBoxStyle" TargetType="ListBox">
